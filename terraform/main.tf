@@ -140,3 +140,109 @@ resource "helm_release" "monitoring" {
   create_namespace = true
   version          = "51.2.0"
 }
+
+# --- AUTOMATED KUBERNETES CONFIGURATION ---
+
+# Cert-Manager ClusterIssuer
+resource "kubernetes_manifest" "letsencrypt_issuer" {
+  depends_on = [helm_release.cert_manager]
+  manifest = {
+    apiVersion = "cert-manager.io/v1"
+    kind       = "ClusterIssuer"
+    metadata = {
+      name = "letsencrypt-prod"
+    }
+    spec = {
+      acme = {
+        server = "https://acme-v02.api.letsencrypt.org/directory"
+        email  = "hannes@${var.domain_name}"
+        privateKeySecretRef = {
+          name = "letsencrypt-prod"
+        }
+        solvers = [
+          {
+            dns01 = {
+              cloudDNS = {
+                project = var.project_id
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+# Main Gateway
+resource "kubernetes_manifest" "main_gateway" {
+  depends_on = [google_container_cluster.primary]
+  manifest = {
+    apiVersion = "gateway.networking.k8s.io/v1beta1"
+    kind       = "Gateway"
+    metadata = {
+      name      = "main-gateway"
+      namespace = "default"
+      annotations = {
+        "cert-manager.io/cluster-issuer" = "letsencrypt-prod"
+      }
+    }
+    spec = {
+      gatewayClassName = "gke-l7-global-external-managed"
+      listeners = [
+        {
+          name     = "https"
+          protocol = "HTTPS"
+          port     = 443
+          hostname = "*.${var.domain_name}"
+          tls = {
+            mode = "Terminate"
+            certificateRefs = [
+              {
+                name = "main-cert"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+
+# HTTPRoutes for Toolset
+resource "kubernetes_manifest" "platform_routes" {
+  for_each = {
+    "argocd"     = { ns = "argocd", svc = "argocd-server", port = 80 }
+    "grafana"    = { ns = "monitoring", svc = "monitoring-grafana", port = 80 }
+    "prometheus" = { ns = "monitoring", svc = "monitoring-kube-prometheus-prometheus", port = 9090 }
+  }
+
+  depends_on = [kubernetes_manifest.main_gateway, helm_release.argocd, helm_release.monitoring]
+
+  manifest = {
+    apiVersion = "gateway.networking.k8s.io/v1beta1"
+    kind       = "HTTPRoute"
+    metadata = {
+      name      = "${each.key}-route"
+      namespace = each.value.ns
+    }
+    spec = {
+      parentRefs = [
+        {
+          name      = "main-gateway"
+          namespace = "default"
+        }
+      ]
+      hostnames = ["${each.key}.${var.domain_name}"]
+      rules = [
+        {
+          backendRefs = [
+            {
+              name = each.value.svc
+              port = each.value.port
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

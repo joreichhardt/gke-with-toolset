@@ -1,26 +1,20 @@
 # Cloud-Native GKE Platform
 
-A fully autonomous Kubernetes infrastructure on GCP featuring automated DNS, SSL, GitOps, and observability.
+A fully autonomous Kubernetes infrastructure on GCP featuring automated DNS, SSL, GitOps, and observability. This setup is designed for persistence and ease of redeployment.
 
 ## 🏗️ Architecture & Features
 
-This platform is deployed as a single unit via Terraform:
+This platform is managed as a single unit via Terraform:
 
-- **GitOps:** Argo CD for application lifecycle management.
+- **Infrastructure:** GKE Cluster with Workload Identity and Gateway API.
+- **GitOps:** Argo CD for automated application lifecycle management.
 - **Auto-DNS & SSL:** Automatic subdomains and HTTPS via ExternalDNS and Cert-Manager.
-- **Observability:** Full Prometheus & Grafana stack.
-- **Modern Networking:** GKE Gateway API for efficient traffic routing.
-
-## 🔄 GitOps Workflow with Argo CD
-
-The application deployment is fully managed by Argo CD. It automatically synchronizes the cluster state with the following repositories:
-
-1.  **Platform Toolset:** This repository manages the GKE infrastructure and core services.
-2.  **txt2md Application:** Argo CD is configured to track the `k8s/` directory in the [txt2md repository](https://github.com/joreichhardt/txt2md). Any changes pushed to that repository will be automatically deployed to the cluster.
+- **Persistence:** **Artifact Registry** is protected from accidental deletion (`prevent_destroy`).
+- **Secret Management:** Sensitive API keys are managed via Terraform variables and automated K8s Secrets.
 
 ## 🌐 Automated Subdomains
 
-The following services are automatically provisioned and reachable via:
+Once deployed, all services are automatically reachable via:
 - **Argo CD:** `https://argocd.${DOMAIN_NAME}`
 - **Grafana:** `https://grafana.${DOMAIN_NAME}`
 - **Prometheus:** `https://prometheus.${DOMAIN_NAME}`
@@ -28,8 +22,12 @@ The following services are automatically provisioned and reachable via:
 
 ## 🚀 Deployment
 
-### 1. Configure
-Set your project and domain in `terraform/variables.tf`.
+### 1. Configuration
+1. Set your project and domain in `terraform/variables.tf`.
+2. Create a `terraform/terraform.tfvars` file to store your sensitive keys (this file is ignored by Git):
+   ```hcl
+   gemini_api_key = "your-api-key-here"
+   ```
 
 ### 2. Apply Infrastructure
 ```bash
@@ -39,9 +37,12 @@ terraform apply
 ```
 *Wait ~15 minutes for the cluster and all platform services to be fully ready.*
 
-### 3. Connect
+### 3. Build & Push Application (First time only)
+Since the Registry is protected, you only need to push the image once or when you have updates:
 ```bash
-gcloud container clusters get-credentials txt2md-cluster --region europe-west3 --project YOUR_PROJECT_ID
+cd ../txt2md
+docker build -t europe-west3-docker.pkg.dev/${PROJECT_ID}/txt2md-repo/txt2md:v1.0.1 .
+docker push europe-west3-docker.pkg.dev/${PROJECT_ID}/txt2md-repo/txt2md:v1.0.1
 ```
 
 ## 🔐 Access Credentials
@@ -50,3 +51,7 @@ gcloud container clusters get-credentials txt2md-cluster --region europe-west3 -
   `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
 - **Grafana (admin):**
   `prom-operator` (initial password, change upon first login)
+
+## 🛠️ Disaster Recovery & Destroy
+- Running `terraform destroy` will delete the cluster and toolset but **keep the Artifact Registry** intact.
+- Upon the next `terraform apply`, the cluster will be rebuilt, the secrets will be re-created, and Argo CD will automatically pull the existing image from the Registry.

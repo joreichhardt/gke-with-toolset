@@ -27,3 +27,9 @@ variable "domain_name" {
   type        = string
   default     = "hannesalbeiro.com"
 }
+
+variable "gemini_api_key" {
+  description = "The Gemini API key for txt2md application"
+  type        = string
+  sensitive   = true
+}

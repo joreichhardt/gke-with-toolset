@@ -67,6 +67,10 @@ resource "google_artifact_registry_repository" "docker_repo" {
   location      = var.region
   repository_id = "txt2md-repo"
   format        = "DOCKER"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Providers für K8s & Helm
@@ -183,6 +187,27 @@ resource "helm_release" "monitoring" {
   namespace        = "monitoring"
   create_namespace = true
   version          = "51.2.0"
+}
+
+# --- APPLICATION SECRETS ---
+
+resource "random_password" "flask_secret" {
+  length  = 32
+  special = false
+}
+
+resource "kubernetes_secret" "txt2md_secrets" {
+  metadata {
+    name      = "txt2md-secrets"
+    namespace = "default"
+  }
+
+  data = {
+    "ai-api-key"       = var.gemini_api_key
+    "flask-secret-key" = random_password.flask_secret.result
+  }
+
+  depends_on = [google_container_cluster.primary]
 }
 
 # --- SECURE PLATFORM CONFIGURATION ---

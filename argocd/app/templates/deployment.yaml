@@ -12,11 +12,11 @@ spec:
   - name: https
     protocol: HTTPS
     port: 443
-    hostname: "*.hannesalbeiro.com"
+    hostname: "*.${DOMAIN_NAME}"
     tls:
       mode: Terminate
       certificateRefs:
-      - name: hannesalbeiro-cert
+      - name: main-cert
 ---
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute
@@ -27,7 +27,7 @@ spec:
   parentRefs:
   - name: main-gateway
   hostnames:
-  - "txt2md.hannesalbeiro.com"
+  - "txt2md.${DOMAIN_NAME}"
   rules:
   - backendRefs:
     - name: txt2md
@@ -51,7 +51,7 @@ spec:
     spec:
       containers:
       - name: txt2md
-        image: europe-west3-docker.pkg.dev/project-84ddd43d-e408-4cb9-8cb/txt2md-repo/txt2md:latest
+        image: europe-west3-docker.pkg.dev/${PROJECT_ID}/txt2md-repo/txt2md:latest
         ports:
         - containerPort: 5000
         env:

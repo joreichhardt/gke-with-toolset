@@ -1,20 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: txt2md-app
+  name: root-app
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/joreichhardt/txt2md.git
+    repoURL: https://github.com/joreichhardt/gke-with-toolset.git
     targetRevision: HEAD
-    path: k8s # Hier liegen die Manifeste im txt2md Repo
+    path: platform/bootstrap
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-    - CreateNamespace=true

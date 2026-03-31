@@ -94,6 +94,11 @@ resource "helm_release" "argocd" {
   namespace        = "argocd"
   create_namespace = true
   version          = "5.46.7"
+
+  set {
+    name  = "server.extraArgs"
+    value = "{--insecure}"
+  }
 }
 
 # 4. Cert-Manager (SSL)

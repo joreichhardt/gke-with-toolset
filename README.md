@@ -11,6 +11,13 @@ This platform is deployed as a single unit via Terraform:
 - **Observability:** Full Prometheus & Grafana stack.
 - **Modern Networking:** GKE Gateway API for efficient traffic routing.
 
+## 🔄 GitOps Workflow with Argo CD
+
+The application deployment is fully managed by Argo CD. It automatically synchronizes the cluster state with the following repositories:
+
+1.  **Platform Toolset:** This repository manages the GKE infrastructure and core services.
+2.  **txt2md Application:** Argo CD is configured to track the `k8s/` directory in the [txt2md repository](https://github.com/joreichhardt/txt2md). Any changes pushed to that repository will be automatically deployed to the cluster.
+
 ## 🌐 Automated Subdomains
 
 The following services are automatically provisioned and reachable via:

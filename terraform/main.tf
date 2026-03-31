@@ -47,11 +47,11 @@ resource "google_container_node_pool" "primary_nodes" {
   name       = "${var.cluster_name}-node-pool"
   location   = var.region
   cluster    = google_container_cluster.primary.name
-  node_count = 3
+  node_count = 1 # 1 node per zone * 3 zones = 3 nodes total
 
   node_config {
     preemptible  = true
-    machine_type = "e2-standard-4" # Größer für Monitoring Stack (Prometheus/Grafana)
+    machine_type = "e2-standard-2" # 2 vCPUs, 8GB RAM - Total 6 vCPUs
 
     service_account = var.service_account_email
     oauth_scopes = ["https://www.googleapis.com/auth/cloud-platform"]
@@ -97,6 +97,12 @@ resource "helm_release" "argocd" {
 }
 
 # 4. Cert-Manager (SSL)
+resource "google_service_account_iam_member" "cert_manager_workload_identity" {
+  service_account_id = "projects/${var.project_id}/serviceAccounts/${var.service_account_email}"
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[cert-manager/cert-manager]"
+}
+
 resource "helm_release" "cert_manager" {
   name             = "cert-manager"
   repository       = "https://charts.jetstack.io"
@@ -108,18 +114,51 @@ resource "helm_release" "cert_manager" {
     name  = "installCRDs"
     value = "true"
   }
+  set {
+    name  = "serviceAccount.annotations.iam\\.gke\\.io/gcp-service-account"
+    value = var.service_account_email
+  }
 }
 
 # 5. External DNS (Cloud DNS Sync)
+resource "google_service_account_iam_member" "external_dns_workload_identity" {
+  service_account_id = "projects/${var.project_id}/serviceAccounts/${var.service_account_email}"
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[kube-system/external-dns]"
+}
+
+resource "google_project_iam_member" "external_dns_dns_admin" {
+  project = var.project_id
+  role    = "roles/dns.admin"
+  member  = "serviceAccount:${var.service_account_email}"
+}
+
 resource "helm_release" "external_dns" {
   name             = "external-dns"
   repository       = "https://kubernetes-sigs.github.io/external-dns/"
   chart            = "external-dns"
   namespace        = "kube-system"
   version          = "1.13.1"
+  
+  set {
+    name  = "serviceAccount.create"
+    value = "true"
+  }
+  set {
+    name  = "serviceAccount.name"
+    value = "external-dns"
+  }
+  set {
+    name  = "serviceAccount.annotations.iam\\.gke\\.io/gcp-service-account"
+    value = var.service_account_email
+  }
   set {
     name  = "provider"
     value = "google"
+  }
+  set {
+    name  = "sources"
+    value = "{service,ingress,gateway-httproute}"
   }
   set {
     name  = "domainFilters[0]"
@@ -141,108 +180,49 @@ resource "helm_release" "monitoring" {
   version          = "51.2.0"
 }
 
-# --- AUTOMATED KUBERNETES CONFIGURATION ---
+# --- SECURE PLATFORM CONFIGURATION ---
+# We use a null_resource to apply manifests via kubectl because the official 
+# kubernetes_manifest provider fails if CRDs are not present during plan/apply.
 
-# Cert-Manager ClusterIssuer
-resource "kubernetes_manifest" "letsencrypt_issuer" {
-  depends_on = [helm_release.cert_manager]
-  manifest = {
-    apiVersion = "cert-manager.io/v1"
-    kind       = "ClusterIssuer"
-    metadata = {
-      name = "letsencrypt-prod"
-    }
-    spec = {
-      acme = {
-        server = "https://acme-v02.api.letsencrypt.org/directory"
-        email  = "hannes@${var.domain_name}"
-        privateKeySecretRef = {
-          name = "letsencrypt-prod"
-        }
-        solvers = [
-          {
-            dns01 = {
-              cloudDNS = {
-                project = var.project_id
-              }
-            }
-          }
-        ]
-      }
-    }
-  }
-}
+resource "null_resource" "apply_platform_manifests" {
+  depends_on = [
+    google_container_cluster.primary,
+    helm_release.cert_manager,
+    helm_release.argocd,
+    helm_release.monitoring
+  ]
 
-# Main Gateway
-resource "kubernetes_manifest" "main_gateway" {
-  depends_on = [google_container_cluster.primary]
-  manifest = {
-    apiVersion = "gateway.networking.k8s.io/v1beta1"
-    kind       = "Gateway"
-    metadata = {
-      name      = "main-gateway"
-      namespace = "default"
-      annotations = {
-        "cert-manager.io/cluster-issuer" = "letsencrypt-prod"
-      }
-    }
-    spec = {
-      gatewayClassName = "gke-l7-global-external-managed"
-      listeners = [
-        {
-          name     = "https"
-          protocol = "HTTPS"
-          port     = 443
-          hostname = "*.${var.domain_name}"
-          tls = {
-            mode = "Terminate"
-            certificateRefs = [
-              {
-                name = "main-cert"
-              }
-            ]
-          }
-        }
-      ]
-    }
-  }
-}
+  provisioner "local-exec" {
+    command = <<EOT
+      gcloud container clusters get-credentials ${var.cluster_name} --region ${var.region} --project ${var.project_id}
+      
+      # Wait a few seconds for CRDs to be fully recognized by the API
+      sleep 30
+      
+      cat <<EOF > platform_generated.yaml
+${templatefile("${path.module}/manifests/platform.yaml.tpl", {
+  domain_name = var.domain_name
+  project_id  = var.project_id
+})}
+EOF
+      kubectl apply -f platform_generated.yaml
 
-# HTTPRoutes for Toolset
-resource "kubernetes_manifest" "platform_routes" {
-  for_each = {
-    "argocd"     = { ns = "argocd", svc = "argocd-server", port = 80 }
-    "grafana"    = { ns = "monitoring", svc = "monitoring-grafana", port = 80 }
-    "prometheus" = { ns = "monitoring", svc = "monitoring-kube-prometheus-prometheus", port = 9090 }
+      # Bootstrap the Argo CD Application for txt2md
+      cat <<EOF > argocd_app_generated.yaml
+${templatefile("${path.module}/../argocd/application.yaml", {
+  # Wir nutzen hier die Variablen, falls sie im Manifest Platzhalter hätten
+})}
+EOF
+      # Hinweis: Da das application.yaml aktuell noch statisch ist, 
+      # wenden wir es einfach direkt an:
+      kubectl apply -f ../argocd/application.yaml
+    EOT
   }
 
-  depends_on = [kubernetes_manifest.main_gateway, helm_release.argocd, helm_release.monitoring]
-
-  manifest = {
-    apiVersion = "gateway.networking.k8s.io/v1beta1"
-    kind       = "HTTPRoute"
-    metadata = {
-      name      = "${each.key}-route"
-      namespace = each.value.ns
-    }
-    spec = {
-      parentRefs = [
-        {
-          name      = "main-gateway"
-          namespace = "default"
-        }
-      ]
-      hostnames = ["${each.key}.${var.domain_name}"]
-      rules = [
-        {
-          backendRefs = [
-            {
-              name = each.value.svc
-              port = each.value.port
-            }
-          ]
-        }
-      ]
-    }
+  triggers = {
+    manifest_sha1 = sha1(templatefile("${path.module}/manifests/platform.yaml.tpl", {
+      domain_name = var.domain_name
+      project_id  = var.project_id
+    }))
   }
 }

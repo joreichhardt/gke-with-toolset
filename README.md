@@ -1,74 +1,46 @@
-# Cloud-Native GKE Platform
+# Cloud-Native GKE Platform (hannesalbeiro.com)
 
-A production-ready Kubernetes infrastructure on Google Cloud Platform (GCP) featuring GitOps, automated SSL, DNS synchronization, and full-stack observability.
+A production-ready Kubernetes infrastructure featuring automated DNS, SSL, and full observability.
 
 ## 🏗️ Architecture & Features
 
-This platform provides a highly scalable and secure environment for modern applications:
+This platform provides a highly scalable and secure environment:
 
-- **Infrastructure:** GKE Cluster with Workload Identity enabled for secure GCP service access without static keys.
-- **Node Configuration:** 3 x `e2-standard-4` nodes (preemptible) providing high performance and cost-efficiency.
-- **GitOps:** Argo CD managed deployment workflow for automated synchronization between GitHub and Cluster state.
-- **Network & Traffic:** 
-  - **Gateway API:** Modern traffic management for GKE.
-  - **ExternalDNS:** Automatic synchronization of Kubernetes resources with Google Cloud DNS (`hannesalbeiro.com`).
-  - **Cert-Manager:** Automated SSL certificate provisioning via Let's Encrypt (DNS-01 challenge).
-- **Observability:** Complete monitoring stack using Prometheus and Grafana for real-time performance insights.
-- **Registry:** Private Google Artifact Registry for secure container image storage.
+- **GitOps & Tooling:** Argo CD, Grafana, Prometheus.
+- **Auto-DNS & SSL:** Automatic subdomains via ExternalDNS and Cert-Manager (Let's Encrypt).
+- **Traffic Management:** Modern Gateway API for routing.
 
-## 📋 Prerequisites
+## 🌐 Dashboard Access
 
-- **Google Cloud SDK (`gcloud`)**
-- **Terraform** (>= 1.0.0)
-- **kubectl**
-- **Helm** (optional, for local manual testing)
+Once deployed, access the services via these URLs:
 
-## 🚀 Deployment Guide
+- **Argo CD:** [https://argocd.hannesalbeiro.com](https://argocd.hannesalbeiro.com)
+- **Grafana:** [https://grafana.hannesalbeiro.com](https://grafana.hannesalbeiro.com)
+- **Prometheus:** [https://prometheus.hannesalbeiro.com](https://prometheus.hannesalbeiro.com)
+- **txt2md App:** [https://txt2md.hannesalbeiro.com](https://txt2md.hannesalbeiro.com)
 
-### 1. Provision Infrastructure
-Initialize and apply the Terraform configuration:
-```bash
-cd terraform
-terraform init
-terraform apply
-```
+## 🚀 Initial Setup
 
-### 2. Cluster Connectivity
-Configure your local environment to interact with the new cluster:
-```bash
-gcloud container clusters get-credentials txt2md-cluster --region europe-west3 --project project-84ddd43d-e408-4cb9-8cb
-```
-
-### 3. Deploy Platform Toolset
-The platform uses Argo CD to manage its own components. Apply the initial application definitions:
-```bash
-kubectl apply -f argocd/application.yaml
-```
-
-## 🔐 Credentials & Access
-
-### Argo CD UI
-1. Retrieve the LoadBalancer IP:
+1. **Terraform Apply:**
    ```bash
-   kubectl get svc argocd-server -n argocd
-   ```
-2. Get the initial admin password:
-   ```bash
-   kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+   cd terraform && terraform apply
    ```
 
-### Grafana Dashboards
-1. Port-forward the service:
+2. **Cluster Access:**
    ```bash
-   kubectl port-forward svc/monitoring-grafana 3000:80 -n monitoring
+   gcloud container clusters get-credentials txt2md-cluster --region europe-west3 --project project-84ddd43d-e408-4cb9-8cb
    ```
-2. Access via `http://localhost:3000` (Default: admin/prom-operator).
 
-## 🛠️ Application Deployment Workflow
+3. **Bootstrap Platform Manifests:**
+   ```bash
+   kubectl apply -f argocd/cert-manager-issuer.yaml
+   kubectl apply -f argocd/platform-routes.yaml
+   kubectl apply -f argocd/application.yaml
+   ```
 
-1. Push your Docker image to the Artifact Registry: `europe-west3-docker.pkg.dev/project-84ddd43d-e408-4cb9-8cb/txt2md-repo/txt2md:latest`
-2. Update the Kubernetes manifests in your application repository.
-3. Argo CD will automatically detect the changes and sync the deployment.
+## 🔐 Credentials
 
-## 📄 License
-This project is licensed under the MIT License.
+- **Argo CD (admin):**
+  `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
+- **Grafana (admin):**
+  `prom-operator` (initial password, change upon first login)

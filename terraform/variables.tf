@@ -38,5 +38,5 @@ variable "domain_name" {
 
 variable "acme_email" {
   type    = string
-  default = "hannes@hannesalbeiro.com"
+  default = "johannes.reichhardt@gmail.com"
 }

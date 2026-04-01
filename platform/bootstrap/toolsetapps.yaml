@@ -13,6 +13,8 @@ spec:
       parameters:
       - name: installCRDs
         value: "true"
+      - name: serviceAccount.annotations.iam\.gke\.io/gcp-service-account
+        value: "cert-manager-gsa@project-84ddd43d-e408-4cb9-8cb.iam.gserviceaccount.com"
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
@@ -44,6 +46,8 @@ spec:
         value: hannesalbeiro.com
       - name: sources
         value: "{service,ingress,gateway-httproute}"
+      - name: serviceAccount.annotations.iam\.gke\.io/gcp-service-account
+        value: "external-dns-gsa@project-84ddd43d-e408-4cb9-8cb.iam.gserviceaccount.com"
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
@@ -51,6 +55,33 @@ spec:
     automated:
       prune: true
       selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-secrets
+  namespace: argocd
+spec:
+  project: default
+  source:
+    chart: external-secrets
+    repoURL: https://charts.external-secrets.io
+    targetRevision: 0.9.9
+    helm:
+      parameters:
+      - name: serviceAccount.annotations.iam\.gke\.io/gcp-service-account
+        value: "eso-gsa@project-84ddd43d-e408-4cb9-8cb.iam.gserviceaccount.com"
+      - name: serviceAccount.name
+        value: "external-secrets-sa"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: external-secrets
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application

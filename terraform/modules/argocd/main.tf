@@ -12,7 +12,6 @@ resource "helm_release" "argocd" {
   }
 }
 
-# Das Root-App Manifest anwenden, sobald Argo CD bereit ist
 resource "kubernetes_manifest" "root_app" {
   depends_on = [helm_release.argocd]
   manifest = {
@@ -25,7 +24,7 @@ resource "kubernetes_manifest" "root_app" {
     spec = {
       project = "default"
       source = {
-        repoURL        = "https://github.com/joreichhardt/gke-with-toolset.git"
+        repoURL        = var.repo_url
         targetRevision = "HEAD"
         path           = "platform/bootstrap"
       }

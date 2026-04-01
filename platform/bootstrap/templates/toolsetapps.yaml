@@ -214,6 +214,10 @@ kind: Application
 metadata:
   name: txt2md-app
   namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: txt2md=europe-west3-docker.pkg.dev/project-84ddd43d-e408-4cb9-8cb/txt2md-repo/txt2md
+    argocd-image-updater.argoproj.io/txt2md.update-strategy: semver
+    argocd-image-updater.argoproj.io/write-back-method: git
 spec:
   project: default
   source:

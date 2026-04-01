@@ -23,15 +23,21 @@ Once deployed, all services are automatically reachable via:
 ## 🚀 Deployment
 
 ### 1. Configuration
-1. Set your project and domain in `terraform/variables.tf`.
-2. Create a `terraform/terraform.tfvars` file to store your sensitive keys (this file is ignored by Git):
+1. Create a `terraform/terraform.tfvars` file to store your configuration (this file is ignored by Git):
    ```hcl
-   gemini_api_key = "your-api-key-here"
+   project_id            = "your-gcp-project-id"
+   domain_name           = "your-domain.com"
+   acme_email            = "admin@your-domain.com"
+   gemini_api_key        = "your-api-key-here"
+   service_account_email = "terraform-sa@your-project.iam.gserviceaccount.com"
    ```
 
 ### 2. Apply Infrastructure
 ```bash
 cd terraform
+# Enable required APIs before first apply
+gcloud services enable secretmanager.googleapis.com compute.googleapis.com container.googleapis.com dns.googleapis.com artifactregistry.googleapis.com
+
 terraform init
 terraform apply
 ```

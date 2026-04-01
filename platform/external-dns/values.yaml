@@ -9,7 +9,8 @@ sources:
   - gateway-httproute
 policy: sync
 registry: txt
-txtOwnerId: "txt2md-cluster"
+txtPrefix: "k8s-"
+txtOwnerId: "txt2md-cluster-v2"
 serviceAccount:
   create: true
   name: "external-dns"

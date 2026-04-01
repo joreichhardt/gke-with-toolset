@@ -5,10 +5,22 @@ terraform {
     prefix = "terraform/state/gke-platform"
   }
   required_providers {
-    google = { source = "hashicorp/google"; version = "~> 5.0" }
-    helm   = { source = "hashicorp/helm"; version = "~> 2.10" }
-    kubernetes = { source = "hashicorp/kubernetes"; version = "~> 2.22" }
-    random = { source = "hashicorp/random"; version = "~> 3.0" }
+    google = { 
+      source  = "hashicorp/google"
+      version = "~> 5.0" 
+    }
+    helm = { 
+      source  = "hashicorp/helm"
+      version = "~> 2.10" 
+    }
+    kubernetes = { 
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.22" 
+    }
+    random = { 
+      source  = "hashicorp/random"
+      version = "~> 3.0" 
+    }
   }
 }
 

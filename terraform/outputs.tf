@@ -10,6 +10,6 @@ output "artifact_registry_repo" {
   value = module.registry.artifact_registry_repo
 }
 
-output "argocd_server_address" {
-  value = "Check with: kubectl get svc argocd-server -n argocd"
+output "argocd_url" {
+  value = "https://argocd.${var.domain_name}"
 }

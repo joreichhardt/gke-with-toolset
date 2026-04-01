@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "wildcard-{{ .Values.domain | replace \".\" \"-\" }}-cert"
+  namespace: kube-system
+spec:
+  secretName: "wildcard-{{ .Values.domain | replace \".\" \"-\" }}-cert"
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "*.{{ .Values.domain }}"
+  dnsNames:
+  - "*.{{ .Values.domain }}"
+  - "{{ .Values.domain }}"

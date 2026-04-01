@@ -5,11 +5,11 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: hannes@hannesalbeiro.com
+    email: {{ .Values.email }}
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
     - dns01:
         cloudDNS:
-          project: project-84ddd43d-e408-4cb9-8cb
+          project: {{ .Values.project_id }}
           # No serviceAccountSecretRef needed due to Workload Identity

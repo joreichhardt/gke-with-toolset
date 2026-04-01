@@ -21,6 +21,10 @@ terraform {
       source  = "hashicorp/random"
       version = "~> 3.0" 
     }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.14.0"
+    }
   }
 }
 
@@ -42,6 +46,13 @@ provider "helm" {
     token                  = data.google_client_config.default.access_token
     cluster_ca_certificate = base64decode(module.gke.cluster_ca_certificate)
   }
+}
+
+provider "kubectl" {
+  host                   = "https://${module.gke.cluster_endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.gke.cluster_ca_certificate)
+  load_config_file       = false
 }
 
 data "google_client_config" "default" {}

@@ -1,0 +1,63 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: argocd-route
+  namespace: argocd
+spec:
+  parentRefs:
+  - name: external-http
+    namespace: kube-system
+  hostnames:
+  - "argocd.{{ .Values.domain }}"
+  rules:
+  - backendRefs:
+    - name: argocd-server
+      port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: grafana-route
+  namespace: monitoring
+spec:
+  parentRefs:
+  - name: external-http
+    namespace: kube-system
+  hostnames:
+  - "grafana.{{ .Values.domain }}"
+  rules:
+  - backendRefs:
+    - name: monitoring-grafana
+      port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: prometheus-route
+  namespace: monitoring
+spec:
+  parentRefs:
+  - name: external-http
+    namespace: kube-system
+  hostnames:
+  - "prometheus.{{ .Values.domain }}"
+  rules:
+  - backendRefs:
+    - name: monitoring-kube-prometheus-prometheus
+      port: 9090
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: txt2md-route
+  namespace: default
+spec:
+  parentRefs:
+  - name: external-http
+    namespace: kube-system
+  hostnames:
+  - "txt2md.{{ .Values.domain }}"
+  rules:
+  - backendRefs:
+    - name: txt2md-service
+      port: 80

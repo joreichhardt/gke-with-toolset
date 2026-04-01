@@ -30,3 +30,13 @@ variable "gemini_api_key" {
   type      = string
   sensitive = true
 }
+
+variable "domain_name" {
+  type    = string
+  default = "hannesalbeiro.com"
+}
+
+variable "acme_email" {
+  type    = string
+  default = "hannes@hannesalbeiro.com"
+}

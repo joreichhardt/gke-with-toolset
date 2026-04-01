@@ -1,0 +1,21 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+  name: external-http
+  namespace: kube-system
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  gatewayClassName: gke-l7-global-external-managed
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    hostname: "*.{{ .Values.domain }}"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: "wildcard-{{ .Values.domain | replace \".\" \"-\" }}-cert"
+    allowedRoutes:
+      namespaces:
+        from: All

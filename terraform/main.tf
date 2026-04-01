@@ -35,14 +35,11 @@ module "registry" {
 }
 
 module "argocd" {
-  source   = "./modules/argocd"
-  repo_url = var.repo_url
-  
-  depends_on = [module.gke]
-}
-
-module "observability" {
-  source     = "./modules/observability"
+  source      = "./modules/argocd"
+  repo_url    = var.repo_url
+  domain_name = var.domain_name
+  acme_email  = var.acme_email
+  project_id  = var.project_id
   
   depends_on = [module.gke]
 }

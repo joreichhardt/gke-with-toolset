@@ -1,0 +1,17 @@
+provider: google
+google:
+  project: "project-84ddd43d-e408-4cb9-8cb"
+domainFilters:
+  - "hannesalbeiro.com"
+sources:
+  - service
+  - ingress
+  - gateway-httproute
+policy: sync # 'sync' will also delete records when resources are removed. Use 'upsert-only' for extra safety.
+registry: txt
+txtOwnerId: "txt2md-cluster"
+serviceAccount:
+  create: true
+  name: "external-dns"
+  annotations:
+    iam.gke.io/gcp-service-account: "external-dns-gsa@project-84ddd43d-e408-4cb9-8cb.iam.gserviceaccount.com"

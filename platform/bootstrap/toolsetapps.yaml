@@ -5,16 +5,16 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    chart: cert-manager
+  sources:
+  - chart: cert-manager
     repoURL: https://charts.jetstack.io
     targetRevision: v1.13.1
     helm:
-      parameters:
-      - name: installCRDs
-        value: "true"
-      - name: serviceAccount.annotations.iam\.gke\.io/gcp-service-account
-        value: "cert-manager-gsa@project-84ddd43d-e408-4cb9-8cb.iam.gserviceaccount.com"
+      valueFiles:
+      - $values/platform/cert-manager/values.yaml
+  - repoURL: https://github.com/joreichhardt/gke-with-toolset.git
+    targetRevision: HEAD
+    ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
@@ -28,26 +28,41 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: external-dns
+  name: cert-manager-configs
   namespace: argocd
 spec:
   project: default
   source:
-    chart: external-dns
+    repoURL: https://github.com/joreichhardt/gke-with-toolset.git
+    targetRevision: HEAD
+    path: platform/cert-manager
+    directory:
+      include: "cluster-issuer.yaml"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+spec:
+  project: default
+  sources:
+  - chart: external-dns
     repoURL: https://kubernetes-sigs.github.io/external-dns/
     targetRevision: 1.13.1
     helm:
-      parameters:
-      - name: provider
-        value: google
-      - name: google.project
-        value: project-84ddd43d-e408-4cb9-8cb
-      - name: domainFilters[0]
-        value: hannesalbeiro.com
-      - name: sources
-        value: "{service,ingress,gateway-httproute}"
-      - name: serviceAccount.annotations.iam\.gke\.io/gcp-service-account
-        value: "external-dns-gsa@project-84ddd43d-e408-4cb9-8cb.iam.gserviceaccount.com"
+      valueFiles:
+      - $values/platform/external-dns/values.yaml
+  - repoURL: https://github.com/joreichhardt/gke-with-toolset.git
+    targetRevision: HEAD
+    ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system

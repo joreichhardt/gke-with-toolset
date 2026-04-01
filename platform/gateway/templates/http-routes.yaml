@@ -59,5 +59,5 @@ spec:
   - "txt2md.{{ .Values.domain }}"
   rules:
   - backendRefs:
-    - name: txt2md-service
+    - name: txt2md
       port: 80

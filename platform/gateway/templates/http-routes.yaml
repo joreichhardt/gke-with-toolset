@@ -45,19 +45,3 @@ spec:
   - backendRefs:
     - name: monitoring-kube-prometheus-prometheus
       port: 9090
----
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: HTTPRoute
-metadata:
-  name: txt2md-route
-  namespace: default
-spec:
-  parentRefs:
-  - name: external-http
-    namespace: kube-system
-  hostnames:
-  - "txt2md.{{ .Values.domain }}"
-  rules:
-  - backendRefs:
-    - name: txt2md
-      port: 80

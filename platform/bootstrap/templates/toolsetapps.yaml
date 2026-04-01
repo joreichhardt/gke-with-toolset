@@ -67,6 +67,8 @@ spec:
       parameters:
       - name: domainFilters[0]
         value: {{ .Values.domain | quote }}
+      - name: project_id
+        value: {{ .Values.project_id | quote }}
   - repoURL: https://github.com/joreichhardt/gke-with-toolset.git
     targetRevision: HEAD
     ref: values
@@ -92,7 +94,7 @@ spec:
     helm:
       parameters:
       - name: serviceAccount.annotations.iam\.gke\.io/gcp-service-account
-        value: "eso-gsa@project-84ddd43d-e408-4cb9-8cb.iam.gserviceaccount.com"
+        value: "eso-gsa@{{ .Values.project_id }}.iam.gserviceaccount.com"
       - name: serviceAccount.name
         value: "external-secrets-sa"
   destination:
@@ -116,6 +118,10 @@ spec:
     repoURL: https://github.com/joreichhardt/gke-with-toolset.git
     targetRevision: HEAD
     path: platform/external-secrets
+    helm:
+      parameters:
+      - name: project_id
+        value: {{ .Values.project_id | quote }}
   destination:
     server: https://kubernetes.default.svc
     namespace: external-secrets
@@ -139,6 +145,8 @@ spec:
       parameters:
       - name: domain
         value: {{ .Values.domain | quote }}
+      - name: project_id
+        value: {{ .Values.project_id | quote }}
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
@@ -212,6 +220,4 @@ spec:
   syncPolicy:
     automated:
       prune: true
-      selfHeal: true
-: true
       selfHeal: true

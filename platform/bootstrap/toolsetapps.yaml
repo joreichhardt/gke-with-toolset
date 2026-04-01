@@ -90,10 +90,16 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    chart: kube-prometheus-stack
+  sources:
+  - chart: kube-prometheus-stack
     repoURL: https://prometheus-community.github.io/helm-charts
     targetRevision: 51.2.0
+    helm:
+      valueFiles:
+      - $values/platform/monitoring/values.yaml
+  - repoURL: https://github.com/joreichhardt/gke-with-toolset.git
+    targetRevision: HEAD
+    ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
@@ -103,6 +109,27 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-configs
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/joreichhardt/gke-with-toolset.git
+    targetRevision: HEAD
+    path: platform/monitoring
+    directory:
+      include: "custom-alerts.yaml"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application

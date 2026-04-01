@@ -15,7 +15,7 @@ spec:
     tls:
       mode: Terminate
       certificateRefs:
-      - name: "wildcard-{{ .Values.domain | replace \".\" \"-\" }}-cert"
+      - name: "wildcard-{{ .Values.domain | replace "." "-" }}-cert"
     allowedRoutes:
       namespaces:
         from: All

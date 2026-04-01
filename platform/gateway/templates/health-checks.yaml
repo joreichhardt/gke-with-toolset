@@ -1,0 +1,31 @@
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: grafana-hc
+  namespace: monitoring
+spec:
+  default:
+    config:
+      type: HTTP
+      httpHealthCheck:
+        requestPath: /api/health
+  targetRef:
+    group: ""
+    kind: Service
+    name: monitoring-grafana
+---
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: prometheus-hc
+  namespace: monitoring
+spec:
+  default:
+    config:
+      type: HTTP
+      httpHealthCheck:
+        requestPath: /-/healthy
+  targetRef:
+    group: ""
+    kind: Service
+    name: monitoring-kube-prometheus-prometheus

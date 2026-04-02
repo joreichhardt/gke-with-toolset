@@ -43,7 +43,7 @@ data:
     signInPage: github
 
     permission:
-      enabled: true
+      enabled: false
 
     integrations:
       github:

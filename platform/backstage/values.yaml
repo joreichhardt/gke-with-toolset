@@ -5,7 +5,6 @@ backstage:
   service:
     type: ClusterIP
     port: 7007
-  # Inject secrets as environment variables
   extraEnvVarsSecrets:
     - backstage-app-secret
   appConfig:
@@ -25,6 +24,8 @@ backstage:
 postgresql:
   enabled: true
   image:
+    registry: ""
+    repository: bitnami/postgresql
     tag: latest
   auth:
     database: backstage_plugin_catalog

@@ -12,11 +12,6 @@ spec:
     helm:
       valueFiles:
       - values.yaml
-      parameters:
-      - name: postgresql.image.tag
-        value: "latest"
-      - name: postgresql.image.repository
-        value: "bitnami/postgresql"
   destination:
     server: https://kubernetes.default.svc
     namespace: backstage

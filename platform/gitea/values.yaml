@@ -14,12 +14,12 @@ gitea:
       USER: gitea
       # PASSWD: will be set by secret
 
+# This controls the inclusion of the postgresql dependency chart
 postgresql:
   enabled: true
   auth:
     database: gitea
     username: gitea
-    # password: will be set by secret
 
 postgresql-ha:
   enabled: false

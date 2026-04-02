@@ -8,7 +8,7 @@ spec:
   - name: external-http
     namespace: kube-system
   hostnames:
-  - "gitea.{{ .Values.domain }}"
+  - "gitea.hannesalbeiro.com"
   rules:
   - backendRefs:
     - name: gitea-http

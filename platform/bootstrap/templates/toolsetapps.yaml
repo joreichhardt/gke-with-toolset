@@ -248,10 +248,8 @@ spec:
     repoURL: https://github.com/joreichhardt/gke-with-toolset.git
     targetRevision: HEAD
     path: platform/gitea
-    helm:
-      parameters:
-      - name: domain
-        value: {{ .Values.domain | quote }}
+    directory:
+      include: "templates/*.yaml"
   destination:
     server: https://kubernetes.default.svc
     namespace: gitea-ci

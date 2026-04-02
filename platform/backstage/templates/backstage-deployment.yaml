@@ -16,25 +16,28 @@ spec:
       containers:
       - name: backstage
         image: ghcr.io/backstage/backstage:latest
+        args: ["--config", "app-config.production.yaml"]
         env:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: backstage-app-secret
               key: POSTGRES_PASSWORD
-        - name: APP_CONFIG_app_baseUrl
-          value: "https://backstage.hannesalbeiro.com"
-        - name: APP_CONFIG_backend_baseUrl
-          value: "https://backstage.hannesalbeiro.com"
-        - name: APP_CONFIG_backend_database_connection_password
-          value: $(POSTGRES_PASSWORD)
-        - name: APP_CONFIG_backend_database_connection_host
-          value: "backstage-postgresql"
-        - name: APP_CONFIG_backend_database_connection_user
-          value: "postgres"
+        # GITHUB_TOKEN is needed for catalog import if repos are private
+        # For now we use a placeholder or you can add it to your GCP Secret Manager
+        - name: GITHUB_TOKEN
+          value: "not-set"
         ports:
         - containerPort: 7007
           name: http
+        volumeMounts:
+        - name: config
+          mountPath: /app/app-config.production.yaml
+          subPath: app-config.production.yaml
+      volumes:
+      - name: config
+        configMap:
+          name: backstage-config
 ---
 apiVersion: v1
 kind: Service

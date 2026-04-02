@@ -228,7 +228,7 @@ spec:
         value: "https://gitea.{{ .Values.domain }}/"
   destination:
     server: https://kubernetes.default.svc
-    namespace: gitea
+    namespace: gitea-ci
   syncPolicy:
     automated:
       prune: true
@@ -261,7 +261,7 @@ spec:
     ref: values
   destination:
     server: https://kubernetes.default.svc
-    namespace: gitea
+    namespace: gitea-ci
   syncPolicy:
     automated:
       prune: true

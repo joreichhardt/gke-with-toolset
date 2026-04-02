@@ -79,5 +79,5 @@ resource "google_project_iam_member" "artifact_registry_writer" {
 resource "google_service_account_iam_member" "gitea_runner_wi" {
   service_account_id = google_service_account.gitea_runner.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "serviceAccount:${var.project_id}.svc.id.goog[gitea/gitea-act-runner]"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[gitea-ci/gitea-act-runner]"
 }

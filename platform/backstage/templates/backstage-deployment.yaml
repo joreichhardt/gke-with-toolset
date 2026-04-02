@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: backstage
-        image: backstage/backstage:latest
+        image: ghcr.io/backstage/backstage:latest
         env:
         - name: POSTGRES_PASSWORD
           valueFrom:
@@ -28,6 +28,10 @@ spec:
           value: "https://backstage.hannesalbeiro.com"
         - name: APP_CONFIG_backend_database_connection_password
           value: $(POSTGRES_PASSWORD)
+        - name: APP_CONFIG_backend_database_connection_host
+          value: "backstage-postgresql"
+        - name: APP_CONFIG_backend_database_connection_user
+          value: "postgres"
         ports:
         - containerPort: 7007
           name: http

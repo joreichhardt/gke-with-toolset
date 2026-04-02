@@ -13,9 +13,13 @@ spec:
       labels:
         app: backstage-postgresql
     spec:
+      securityContext:
+        fsGroup: 999
       containers:
       - name: postgres
         image: postgres:14.22-trixie
+        securityContext:
+          runAsUser: 999
         env:
         - name: POSTGRES_DB
           value: backstage_plugin_catalog

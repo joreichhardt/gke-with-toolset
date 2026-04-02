@@ -10,7 +10,8 @@ config:
     ROOT_URL: "https://gitea.hannesalbeiro.com/"
 service:
   http:
-    serviceType: ClusterIP
+    type: ClusterIP
+    port: 3000
 
 # Hier deaktivieren wir jetzt explizit alle Standard-Postgres/Redis-Dependencies des Charts
 postgresql:

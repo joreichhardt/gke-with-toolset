@@ -1,18 +1,23 @@
-gitea:
-  instance: https://gitea.{{ .Values.domain }}/
+# Config for Gitea Actions (Chart: gitea/actions v0.0.4)
+enabled: true
 
-serviceAccount:
-  create: true
-  annotations:
-    iam.gke.io/gcp-service-account: "gitea-runner-gsa@{{ .Values.project_id }}.iam.gserviceaccount.com"
+giteaRootURL: "https://gitea.hannesalbeiro.com/"
+existingSecret: "gitea-runner-secret"
+existingSecretKey: "token"
 
-runner:
-  capacity: 2
-  config:
-    container:
-      privileged: true
-    # Use host docker socket if available, otherwise use dind
-    # For GKE, we might need a dind sidecar if containerd is used.
-    # The helm chart often supports this via runner.dind.enabled
+statefulset:
+  replicas: 1
+  serviceAccountName: "gitea-act-runner"
+  actRunner:
+    config: |
+      log:
+        level: info
+      cache:
+        enabled: false
+      container:
+        require_docker: true
+        docker_timeout: 300s
+        privileged: true
   dind:
-    enabled: true
+    # GKE Autopilot needs some help with dind
+    {}

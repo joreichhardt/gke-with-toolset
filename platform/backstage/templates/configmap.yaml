@@ -67,4 +67,22 @@ data:
     spec:
       type: service
       lifecycle: production
-      owner: guest
+      owner: group:default/admins
+    ---
+    apiVersion: backstage.io/v1alpha1
+    kind: Group
+    metadata:
+      name: admins
+      description: Administrators of the portal
+    spec:
+      type: team
+      children: []
+    ---
+    apiVersion: backstage.io/v1alpha1
+    kind: User
+    metadata:
+      name: joreichhardt
+    spec:
+      profile:
+        displayName: joreichhardt
+      memberOf: [admins]

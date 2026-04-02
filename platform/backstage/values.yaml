@@ -5,6 +5,9 @@ backstage:
   service:
     type: ClusterIP
     port: 7007
+  # Inject secrets as environment variables
+  extraEnvVarsSecrets:
+    - backstage-app-secret
   appConfig:
     app:
       title: "Hannes Albeiro Dev Portal"
@@ -21,9 +24,13 @@ backstage:
 
 postgresql:
   enabled: true
+  image:
+    tag: 15.5.0-debian-11-r0
   auth:
     database: backstage_plugin_catalog
-    username: postgres
+    existingSecret: "backstage-db-secret"
+    secretKeys:
+      adminPasswordKey: "postgres-password"
   primary:
     persistence:
       enabled: true

@@ -59,3 +59,27 @@ resource "google_secret_manager_secret_iam_member" "eso_gitea_reader" {
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${var.eso_gsa_email}"
 }
+
+# Backstage DB Password managed in Secret Manager
+resource "random_password" "backstage_db_password" {
+  length  = 24
+  special = false
+}
+
+resource "google_secret_manager_secret" "backstage_db_password" {
+  secret_id = "backstage-db-password"
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret_version" "backstage_db_password_v1" {
+  secret      = google_secret_manager_secret.backstage_db_password.id
+  secret_data = random_password.backstage_db_password.result
+}
+
+resource "google_secret_manager_secret_iam_member" "eso_backstage_reader" {
+  secret_id = google_secret_manager_secret.backstage_db_password.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${var.eso_gsa_email}"
+}

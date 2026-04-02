@@ -50,6 +50,10 @@ data:
         - host: github.com
           token: ${GITHUB_TOKEN}
 
+    notifications: null
+    signals: null
+    events: null
+
     catalog:
       locations:
         # Local example entity

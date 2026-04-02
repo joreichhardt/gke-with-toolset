@@ -5,10 +5,12 @@ gitea:
       actions:
         ENABLED: true
       server:
-        # DOMAIN: "gitea.{{ .Values.domain }}" # Handled by parameters in toolsetapps.yaml
-        # ROOT_URL: "https://gitea.{{ .Values.domain }}/"
-        SSH_DOMAIN: "gitea.localhost"
+        SSH_DOMAIN: "gitea.hannesalbeiro.com"
     postgresql:
       enabled: true
     postgresql-ha:
+      enabled: false
+    redis-cluster:
+      enabled: false
+    mongodb:
       enabled: false

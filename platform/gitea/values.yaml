@@ -1,15 +1,18 @@
 gitea:
-  config:
-    APP_NAME: "Gitea: Git with a cup of tea"
-    actions:
-      ENABLED: true
-    server:
-      SSH_DOMAIN: "gitea.hannesalbeiro.com"
-  postgresql:
-    enabled: true
-  postgresql-ha:
-    enabled: false
-  redis-cluster:
-    enabled: false
-  mongodb:
-    enabled: false
+  gitea:
+    config:
+      APP_NAME: "Gitea: Git with a cup of tea"
+      database:
+        DB_TYPE: sqlite3
+      actions:
+        ENABLED: true
+      server:
+        SSH_DOMAIN: "gitea.hannesalbeiro.com"
+    postgresql:
+      enabled: false
+    postgresql-ha:
+      enabled: false
+    redis-cluster:
+      enabled: false
+    mongodb:
+      enabled: false

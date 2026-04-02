@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backstage
+  namespace: backstage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backstage
+  template:
+    metadata:
+      labels:
+        app: backstage
+    spec:
+      containers:
+      - name: backstage
+        image: backstage/backstage:latest
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backstage-app-secret
+              key: POSTGRES_PASSWORD
+        - name: APP_CONFIG_app_baseUrl
+          value: "https://backstage.hannesalbeiro.com"
+        - name: APP_CONFIG_backend_baseUrl
+          value: "https://backstage.hannesalbeiro.com"
+        - name: APP_CONFIG_backend_database_connection_password
+          value: $(POSTGRES_PASSWORD)
+        ports:
+        - containerPort: 7007
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backstage
+  namespace: backstage
+spec:
+  ports:
+  - port: 7007
+    targetPort: http
+  selector:
+    app: backstage

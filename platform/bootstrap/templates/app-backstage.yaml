@@ -9,10 +9,8 @@ spec:
     repoURL: https://github.com/joreichhardt/gke-with-toolset.git
     targetRevision: HEAD
     path: platform/backstage
-    helm:
-      valueFiles:
-      - values.yaml
-      skipSchemaValidation: true
+    directory:
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: backstage

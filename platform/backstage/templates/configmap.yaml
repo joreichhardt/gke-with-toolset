@@ -33,11 +33,9 @@ data:
     auth:
       environment: production
       providers:
-        guest: null
         github:
-          production:
-            clientId: ${GITHUB_CLIENT_ID}
-            clientSecret: ${GITHUB_CLIENT_SECRET}
+          clientId: ${GITHUB_CLIENT_ID}
+          clientSecret: ${GITHUB_CLIENT_SECRET}
 
     permission:
       enabled: true
@@ -55,6 +53,8 @@ data:
         # Hello World Template
         - type: url
           target: https://github.com/joreichhardt/gke-with-toolset/blob/master/backstage-templates/hello-world/template.yaml
+          rules:
+            - allow: [Template]
         # Import your projects automatically
         - type: url
           target: https://github.com/joreichhardt/txt2md/blob/master/catalog-info.yaml

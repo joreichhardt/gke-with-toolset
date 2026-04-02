@@ -32,7 +32,17 @@ spec:
             secretKeyRef:
               name: backstage-app-secret
               key: GITHUB_CLIENT_ID
+        - name: AUTH_GITHUB_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: backstage-app-secret
+              key: GITHUB_CLIENT_ID
         - name: GITHUB_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backstage-app-secret
+              key: GITHUB_CLIENT_SECRET
+        - name: AUTH_GITHUB_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
               name: backstage-app-secret

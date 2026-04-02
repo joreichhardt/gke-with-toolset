@@ -35,10 +35,15 @@ data:
       providers:
         guest: null
         github:
+          development:
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret: ${GITHUB_CLIENT_SECRET}
           production:
             clientId: ${GITHUB_CLIENT_ID}
             clientSecret: ${GITHUB_CLIENT_SECRET}
             callbackUrl: https://backstage.hannesalbeiro.com/api/auth/github/handler/frame
+          clientId: ${GITHUB_CLIENT_ID}
+          clientSecret: ${GITHUB_CLIENT_SECRET}
 
     signInPage: github
 

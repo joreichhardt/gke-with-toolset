@@ -40,3 +40,22 @@ resource "google_secret_manager_secret_iam_member" "eso_flask_reader" {
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${var.eso_gsa_email}"
 }
+
+# Gitea Runner Token managed in Secret Manager
+resource "google_secret_manager_secret" "gitea_token" {
+  secret_id = "gitea-runner-token"
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret_version" "gitea_token_v1" {
+  secret      = google_secret_manager_secret.gitea_token.id
+  secret_data = var.gitea_runner_token
+}
+
+resource "google_secret_manager_secret_iam_member" "eso_gitea_reader" {
+  secret_id = google_secret_manager_secret.gitea_token.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${var.eso_gsa_email}"
+}

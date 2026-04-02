@@ -49,7 +49,7 @@ terraform apply
 ```
 
 ### 2. Gitea Runner Registration
-After Gitea is up, retrieve the registration token from **Site Admin -> Actions -> Runners** and update `platform/gitea/runner-values.yaml`.
+After Gitea is up, retrieve the registration token from **Site Admin -> Actions -> Runners**, update your `terraform.tfvars` with `gitea_runner_token = "YOUR_TOKEN"`, and run `terraform apply` again. The External Secrets Operator will then automatically sync it to the runner.
 
 ## 🛡️ Disaster Recovery & Destroy
 - Running `terraform destroy` will delete the cluster and toolset but **keep the Artifact Registry** intact.

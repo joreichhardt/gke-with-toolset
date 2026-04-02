@@ -7,6 +7,11 @@ variable "gemini_api_key" {
   sensitive = true
 }
 
+variable "gitea_runner_token" {
+  type      = string
+  sensitive = true
+}
+
 variable "eso_gsa_email" {
   type = string
 }

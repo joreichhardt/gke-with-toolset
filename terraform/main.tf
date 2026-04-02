@@ -22,10 +22,11 @@ module "gke" {
 }
 
 module "secrets" {
-  source         = "./modules/secrets"
-  project_id     = var.project_id
-  gemini_api_key = var.gemini_api_key
-  eso_gsa_email  = module.iam.eso_gsa_email
+  source             = "./modules/secrets"
+  project_id         = var.project_id
+  gemini_api_key     = var.gemini_api_key
+  gitea_runner_token = var.gitea_runner_token
+  eso_gsa_email      = module.iam.eso_gsa_email
 }
 
 module "registry" {

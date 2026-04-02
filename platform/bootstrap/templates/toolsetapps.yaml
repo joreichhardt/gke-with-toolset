@@ -249,7 +249,7 @@ spec:
     targetRevision: HEAD
     path: platform/gitea
     directory:
-      include: "templates/*.yaml"
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: gitea-ci

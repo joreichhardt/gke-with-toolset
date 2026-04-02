@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: global-redirect
+  namespace: kube-system
+spec:
+  parentRefs:
+  - name: external-http
+    namespace: kube-system
+    sectionName: http
+  hostnames:
+  - "*.{{ .Values.domain }}"
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301

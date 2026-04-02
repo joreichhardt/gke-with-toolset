@@ -7,6 +7,7 @@ spec:
   parentRefs:
   - name: external-http
     namespace: kube-system
+    sectionName: https
   hostnames:
   - "gitea.hannesalbeiro.com"
   rules:

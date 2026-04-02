@@ -7,6 +7,7 @@ spec:
   parentRefs:
   - name: external-http
     namespace: kube-system
+    sectionName: https
   hostnames:
   - "argocd.{{ .Values.domain }}"
   rules:
@@ -23,6 +24,7 @@ spec:
   parentRefs:
   - name: external-http
     namespace: kube-system
+    sectionName: https
   hostnames:
   - "grafana.{{ .Values.domain }}"
   rules:
@@ -39,6 +41,7 @@ spec:
   parentRefs:
   - name: external-http
     namespace: kube-system
+    sectionName: https
   hostnames:
   - "txt2md.{{ .Values.domain }}"
   rules:

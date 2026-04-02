@@ -12,6 +12,11 @@ spec:
     helm:
       valueFiles:
       - values.yaml
+      parameters:
+      - name: postgresql.image.tag
+        value: "15.5.0-debian-11-r0"
+      - name: postgresql.image.repository
+        value: "docker.io/bitnami/postgresql"
   destination:
     server: https://kubernetes.default.svc
     namespace: backstage

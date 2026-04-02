@@ -22,7 +22,7 @@ data:
           user: postgres
           password: ${POSTGRES_PASSWORD}
       auth:
-        dangerouslyDisableDefaultAuthPolicy: false
+        dangerouslyDisableDefaultAuthPolicy: true
         keys:
           - secret: "backstage-auth-secret-key"
       reading:
@@ -33,17 +33,12 @@ data:
     auth:
       environment: production
       providers:
-        guest: null
+        guest: {}
         github:
-          development:
-            clientId: ${GITHUB_CLIENT_ID}
-            clientSecret: ${GITHUB_CLIENT_SECRET}
           production:
             clientId: ${GITHUB_CLIENT_ID}
             clientSecret: ${GITHUB_CLIENT_SECRET}
             callbackUrl: https://backstage.hannesalbeiro.com/api/auth/github/handler/frame
-          clientId: ${GITHUB_CLIENT_ID}
-          clientSecret: ${GITHUB_CLIENT_SECRET}
 
     signInPage: github
 

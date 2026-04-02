@@ -1,0 +1,18 @@
+gitea:
+  instance: https://gitea.{{ .Values.domain }}/
+
+serviceAccount:
+  create: true
+  annotations:
+    iam.gke.io/gcp-service-account: "gitea-runner-gsa@{{ .Values.project_id }}.iam.gserviceaccount.com"
+
+runner:
+  capacity: 2
+  config:
+    container:
+      privileged: true
+    # Use host docker socket if available, otherwise use dind
+    # For GKE, we might need a dind sidecar if containerd is used.
+    # The helm chart often supports this via runner.dind.enabled
+  dind:
+    enabled: true

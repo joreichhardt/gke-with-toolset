@@ -63,3 +63,21 @@ resource "google_service_account_iam_member" "eso_wi" {
   role               = "roles/iam.workloadIdentityUser"
   member             = "serviceAccount:${var.project_id}.svc.id.goog[external-secrets/external-secrets-sa]"
 }
+
+# GSA for Gitea Runner
+resource "google_service_account" "gitea_runner" {
+  account_id   = "gitea-runner-gsa"
+  display_name = "GSA for Gitea Runner"
+}
+
+resource "google_project_iam_member" "artifact_registry_writer" {
+  project = var.project_id
+  role    = "roles/artifactregistry.writer"
+  member  = "serviceAccount:${google_service_account.gitea_runner.email}"
+}
+
+resource "google_service_account_iam_member" "gitea_runner_wi" {
+  service_account_id = google_service_account.gitea_runner.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[gitea/gitea-act-runner]"
+}

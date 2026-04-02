@@ -1,0 +1,26 @@
+gitea:
+  config:
+    APP_NAME: "Gitea: Git with a cup of tea"
+    actions:
+      ENABLED: true
+    server:
+      DOMAIN: "gitea.{{ .Values.domain }}"
+      ROOT_URL: "https://gitea.{{ .Values.domain }}/"
+      SSH_DOMAIN: "gitea.{{ .Values.domain }}"
+    database:
+      DB_TYPE: postgres
+      HOST: gitea-postgresql.gitea.svc.cluster.local:5432
+      NAME: gitea
+      USER: gitea
+      # PASSWD: will be set by secret
+
+postgresql:
+  enabled: true
+  auth:
+    database: gitea
+    username: gitea
+    # password: will be set by secret
+
+persistence:
+  enabled: true
+  size: 10Gi

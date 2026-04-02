@@ -37,10 +37,15 @@ spec:
             secretKeyRef:
               name: backstage-app-secret
               key: GITHUB_CLIENT_SECRET
+        - name: LOG_LEVEL
+          value: debug
         ports:
         - containerPort: 7007
           name: http
         volumeMounts:
+        - name: config
+          mountPath: /app/app-config.yaml
+          subPath: app-config.production.yaml
         - name: config
           mountPath: /app/app-config.production.yaml
           subPath: app-config.production.yaml

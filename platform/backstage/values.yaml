@@ -24,9 +24,10 @@ backstage:
 postgresql:
   enabled: true
   image:
-    registry: ""
+    # In newer charts, leaving this empty often works better or we set it to 'docker.io'
+    registry: docker.io
     repository: bitnami/postgresql
-    tag: latest
+    tag: 15.5.0-debian-11-r0
   auth:
     database: backstage_plugin_catalog
     existingSecret: "backstage-db-secret"

@@ -9,5 +9,5 @@ dependencies:
     version: 1.0.0
     repository: https://backstage.github.io/charts
   - name: postgresql
-    version: 12.1.6
+    version: 15.5.2
     repository: https://charts.bitnami.com/bitnami

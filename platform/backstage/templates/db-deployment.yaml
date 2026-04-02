@@ -21,6 +21,8 @@ spec:
         securityContext:
           runAsUser: 999
         env:
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         - name: POSTGRES_DB
           value: backstage_plugin_catalog
         - name: POSTGRES_USER

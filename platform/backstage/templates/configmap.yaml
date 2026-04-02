@@ -52,6 +52,9 @@ data:
         # Local example entity
         - type: file
           target: /app/local-catalog-info.yaml
+        # Hello World Template
+        - type: url
+          target: https://github.com/joreichhardt/gke-with-toolset/blob/master/backstage-templates/hello-world/template.yaml
         # Import your projects automatically
         - type: url
           target: https://github.com/joreichhardt/txt2md/blob/master/catalog-info.yaml

@@ -7,23 +7,3 @@ gitea:
       DOMAIN: "gitea.{{ .Values.domain }}"
       ROOT_URL: "https://gitea.{{ .Values.domain }}/"
       SSH_DOMAIN: "gitea.{{ .Values.domain }}"
-    database:
-      DB_TYPE: postgres
-      HOST: gitea-postgresql.gitea.svc.cluster.local:5432
-      NAME: gitea
-      USER: gitea
-      # PASSWD: will be set by secret
-
-# This controls the inclusion of the postgresql dependency chart
-postgresql:
-  enabled: true
-  auth:
-    database: gitea
-    username: gitea
-
-postgresql-ha:
-  enabled: false
-
-persistence:
-  enabled: true
-  size: 10Gi

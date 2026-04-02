@@ -33,6 +33,7 @@ data:
       environment: production
       allowGuestAccess: false
       providers:
+        guest: null
         github:
           production:
             clientId: ${GITHUB_CLIENT_ID}
@@ -41,7 +42,7 @@ data:
     signInPage: github
 
     permission:
-      enabled: false
+      enabled: true
 
     integrations:
       github:

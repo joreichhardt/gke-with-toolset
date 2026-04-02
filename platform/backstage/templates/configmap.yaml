@@ -20,6 +20,28 @@ data:
           port: 5432
           user: postgres
           password: ${POSTGRES_PASSWORD}
+      auth:
+        dangerouslyDisableDefaultAuthPolicy: true
+        keys:
+          - secret: "backstage-auth-secret-key"
+      reading:
+        allow:
+          - host: github.com
+          - host: raw.githubusercontent.com
+
+    auth:
+      environment: production
+      allowGuestAccess: false
+      providers:
+        github:
+          production:
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret: ${GITHUB_CLIENT_SECRET}
+
+    signInPage: github
+
+    permission:
+      enabled: false
 
     integrations:
       github:
@@ -27,11 +49,23 @@ data:
           token: ${GITHUB_TOKEN}
 
     catalog:
-      import:
-        entityFilename: catalog-info.yaml
       locations:
+        # Local example entity
+        - type: file
+          target: /app/local-catalog-info.yaml
         # Import your projects automatically
         - type: url
-          target: https://github.com/joreichhardt/txt2md/blob/main/catalog-info.yaml
+          target: https://github.com/joreichhardt/txt2md/blob/master/catalog-info.yaml
           rules:
             - allow: [Component, System, API, Group, User, Resource, Location]
+
+  local-catalog-info.yaml: |
+    apiVersion: backstage.io/v1alpha1
+    kind: Component
+    metadata:
+      name: backstage
+      description: The Backstage service itself
+    spec:
+      type: service
+      lifecycle: production
+      owner: guest

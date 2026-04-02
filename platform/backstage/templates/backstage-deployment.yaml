@@ -16,7 +16,6 @@ spec:
       containers:
       - name: backstage
         image: ghcr.io/backstage/backstage:latest
-        args: ["--config", "app-config.production.yaml"]
         env:
         - name: POSTGRES_PASSWORD
           valueFrom:
@@ -28,6 +27,16 @@ spec:
             secretKeyRef:
               name: backstage-app-secret
               key: GITHUB_TOKEN
+        - name: GITHUB_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: backstage-app-secret
+              key: GITHUB_CLIENT_ID
+        - name: GITHUB_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backstage-app-secret
+              key: GITHUB_CLIENT_SECRET
         ports:
         - containerPort: 7007
           name: http
@@ -35,6 +44,9 @@ spec:
         - name: config
           mountPath: /app/app-config.production.yaml
           subPath: app-config.production.yaml
+        - name: config
+          mountPath: /app/local-catalog-info.yaml
+          subPath: local-catalog-info.yaml
       volumes:
       - name: config
         configMap:

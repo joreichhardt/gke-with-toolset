@@ -240,29 +240,6 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: gitea-configs
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: https://github.com/joreichhardt/gke-with-toolset.git
-    targetRevision: HEAD
-    path: platform/gitea
-    helm:
-      parameters:
-      - name: domain
-        value: {{ .Values.domain | quote }}
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: gitea
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
   name: gitea-act-runner
   namespace: argocd
 spec:

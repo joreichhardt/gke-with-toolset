@@ -266,9 +266,9 @@ metadata:
 spec:
   project: default
   sources:
-  - chart: gitea-act-runner
+  - chart: actions
     repoURL: https://dl.gitea.com/charts/
-    targetRevision: 0.2.0
+    targetRevision: 0.0.4
     helm:
       valueFiles:
       - $values/platform/gitea/runner-values.yaml

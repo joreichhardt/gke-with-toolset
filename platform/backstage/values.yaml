@@ -1,0 +1,30 @@
+backstage:
+  image:
+    repository: backstage/backstage
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 7007
+  appConfig:
+    app:
+      title: "Hannes Albeiro Dev Portal"
+      baseUrl: "https://backstage.hannesalbeiro.com"
+    backend:
+      baseUrl: "https://backstage.hannesalbeiro.com"
+      database:
+        client: pg
+        connection:
+          host: backstage-postgresql
+          port: 5432
+          user: postgres
+          password: ${POSTGRES_PASSWORD}
+
+postgresql:
+  enabled: true
+  auth:
+    database: backstage_plugin_catalog
+    username: postgres
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi

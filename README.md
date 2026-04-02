@@ -1,63 +1,56 @@
 # Cloud-Native GKE Platform
 
-A fully autonomous Kubernetes infrastructure on GCP featuring automated DNS, SSL, GitOps, and observability. This setup is designed for persistence and ease of redeployment.
+A fully autonomous Kubernetes infrastructure on GCP featuring automated DNS, SSL, GitOps, and a complete CI/CD pipeline. This setup is designed for persistence and ease of redeployment.
 
 ## 🏗️ Architecture & Features
 
-This platform is managed as a single unit via Terraform:
+This platform is managed as a single unit via Terraform and Argo CD:
 
-- **Infrastructure:** GKE Cluster with Workload Identity and Gateway API.
+- **Infrastructure:** GKE Autopilot Cluster with Workload Identity and Gateway API.
 - **GitOps:** Argo CD for automated application lifecycle management.
-- **Auto-DNS & SSL:** Automatic subdomains and HTTPS via ExternalDNS and Cert-Manager.
-- **Persistence:** **Artifact Registry** is protected from accidental deletion (`prevent_destroy`).
-- **Secret Management:** Sensitive API keys are managed via Terraform variables and automated K8s Secrets.
+- **CI/CD:** **Gitea** (hosted on-cluster) with **Gitea Actions (Runner)** for automated Docker builds.
+- **Auto-DNS & SSL:** Automatic subdomains and HTTPS via ExternalDNS and Cert-Manager (Let's Encrypt).
+- **Network:** Global L7 Load Balancer with **automatic HTTP-to-HTTPS redirection**.
+- **Persistence:** Artifact Registry is protected from accidental deletion (`prevent_destroy`).
+- **Secret Management:** Google Secret Manager integrated with External Secrets Operator (ESO).
 
 ## 🌐 Automated Subdomains
 
-Once deployed, all services are automatically reachable via:
-- **Argo CD:** `https://argocd.${DOMAIN_NAME}`
-- **Grafana:** `https://grafana.${DOMAIN_NAME}`
-- **Prometheus:** `https://prometheus.${DOMAIN_NAME}`
+Once deployed, all services are automatically reachable via HTTPS:
+- **Gitea (Git & CI):** `https://gitea.${DOMAIN_NAME}`
+- **Argo CD (GitOps):** `https://argocd.${DOMAIN_NAME}`
+- **Grafana (Monitoring):** `https://grafana.${DOMAIN_NAME}`
 - **txt2md App:** `https://txt2md.${DOMAIN_NAME}`
 
-## 🚀 Deployment
+## 🚀 CI/CD Pipeline Flow
 
-### 1. Configuration
-1. Create a `terraform/terraform.tfvars` file to store your configuration (this file is ignored by Git):
-   ```hcl
-   project_id            = "your-gcp-project-id"
-   domain_name           = "your-domain.com"
-   acme_email            = "admin@your-domain.com"
-   gemini_api_key        = "your-api-key-here"
-   service_account_email = "terraform-sa@your-project.iam.gserviceaccount.com"
-   ```
+1. **Push:** You push code to GitHub.
+2. **Mirror:** Gitea mirrors the GitHub repository in real-time (via Webhook).
+3. **Build:** A Gitea Action (`.gitea/workflows/build.yaml`) triggers on the internal runner.
+4. **Push:** The runner builds the Docker image and pushes it to Google Artifact Registry using Workload Identity.
+5. **Deploy:** **Argo CD Image Updater** detects the new image version, updates the manifest in Gitea, and triggers a rolling update in the GKE cluster.
 
-### 2. Apply Infrastructure
-```bash
-cd terraform
-# Enable required APIs before first apply
-gcloud services enable secretmanager.googleapis.com compute.googleapis.com container.googleapis.com dns.googleapis.com artifactregistry.googleapis.com
-
-terraform init
-terraform apply
-```
-*Wait ~15 minutes for the cluster and all platform services to be fully ready.*
-
-### 3. Build & Push Application (First time only)
-Since the Registry is protected, you only need to push the image once or when you have updates:
-```bash
-cd ../txt2md
-docker build -t europe-west3-docker.pkg.dev/${PROJECT_ID}/txt2md-repo/txt2md:v1.0.1 .
-docker push europe-west3-docker.pkg.dev/${PROJECT_ID}/txt2md-repo/txt2md:v1.0.1
-```
-
-## 🔐 Access Credentials
+## 🔐 Initial Access & Credentials
 
 - **Argo CD (admin):**
   `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
+- **Gitea:**
+  Create your first admin account via the web UI upon first access.
 - **Grafana (admin):**
   `prom-operator` (initial password, change upon first login)
 
-## 🛠️ Disaster Recovery & Destroy
+## 🛠️ Deployment
+
+### 1. Terraform Infrastructure
+```bash
+cd terraform
+terraform init
+terraform apply
+```
+
+### 2. Gitea Runner Registration
+After Gitea is up, retrieve the registration token from **Site Admin -> Actions -> Runners** and update `platform/gitea/runner-values.yaml`.
+
+## 🛡️ Disaster Recovery & Destroy
 - Running `terraform destroy` will delete the cluster and toolset but **keep the Artifact Registry** intact.
-- Upon the next `terraform apply`, the cluster will be rebuilt, the secrets will be re-created, and Argo CD will automatically pull the existing image from the Registry.
+- Upon the next `terraform apply`, the cluster will be rebuilt, and Argo CD will automatically restore the entire platform state from the Git manifests.

@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gitea-cert
+  namespace: gitea-ci
+spec:
+  secretName: gitea-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "gitea.hannesalbeiro.com"
+  dnsNames:
+  - "gitea.hannesalbeiro.com"

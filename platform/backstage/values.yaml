@@ -25,7 +25,7 @@ backstage:
 postgresql:
   enabled: true
   image:
-    tag: 15.5.0-debian-11-r0
+    tag: latest
   auth:
     database: backstage_plugin_catalog
     existingSecret: "backstage-db-secret"

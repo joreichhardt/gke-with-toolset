@@ -16,7 +16,7 @@ spec:
       - name: postgresql.image.tag
         value: "latest"
       - name: postgresql.image.repository
-        value: "docker.io/bitnami/postgresql"
+        value: "bitnami/postgresql"
   destination:
     server: https://kubernetes.default.svc
     namespace: backstage

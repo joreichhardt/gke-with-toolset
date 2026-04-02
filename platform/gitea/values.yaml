@@ -1,18 +1,20 @@
+# Explicitly disable sub-charts that Gitea pulls in
+postgresql:
+  enabled: false
+postgresql-ha:
+  enabled: false
+redis-cluster:
+  enabled: false
+mongodb:
+  enabled: false
+
 gitea:
-  gitea:
-    config:
-      APP_NAME: "Gitea: Git with a cup of tea"
-      database:
-        DB_TYPE: sqlite3
-      actions:
-        ENABLED: true
-      server:
-        SSH_DOMAIN: "gitea.hannesalbeiro.com"
-    postgresql:
-      enabled: false
-    postgresql-ha:
-      enabled: false
-    redis-cluster:
-      enabled: false
-    mongodb:
-      enabled: false
+  config:
+    APP_NAME: "Gitea: Git with a cup of tea"
+    database:
+      DB_TYPE: sqlite3
+    actions:
+      ENABLED: true
+    server:
+      DOMAIN: "gitea.hannesalbeiro.com"
+      ROOT_URL: "https://gitea.hannesalbeiro.com/"

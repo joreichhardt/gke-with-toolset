@@ -216,22 +216,16 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    chart: gitea
+  sources:
+  - chart: gitea
     repoURL: https://dl.gitea.com/charts/
     targetRevision: 10.1.3
     helm:
-      parameters:
-      - name: gitea.config.server.DOMAIN
-        value: "gitea.{{ .Values.domain }}"
-      - name: gitea.config.server.ROOT_URL
-        value: "https://gitea.{{ .Values.domain }}/"
-      - name: gitea.config.actions.ENABLED
-        value: "true"
-      - name: postgresql.enabled
-        value: "false"
-      - name: postgresql-ha.enabled
-        value: "false"
+      valueFiles:
+      - $values/platform/gitea/values.yaml
+  - repoURL: https://github.com/joreichhardt/gke-with-toolset.git
+    targetRevision: HEAD
+    ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: gitea-ci

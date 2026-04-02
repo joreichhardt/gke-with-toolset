@@ -1,17 +1,16 @@
 # Dies sind die offiziellen Values für das Gitea-Chart (https://dl.gitea.com/charts/)
-gitea:
-  config:
-    APP_NAME: "Gitea: Git with a cup of tea"
-    database:
-      DB_TYPE: sqlite3
-    actions:
-      ENABLED: true
-    server:
-      DOMAIN: "gitea.hannesalbeiro.com"
-      ROOT_URL: "https://gitea.hannesalbeiro.com/"
-    service:
-      http:
-        serviceType: ClusterIP
+config:
+  APP_NAME: "Gitea: Git with a cup of tea"
+  database:
+    DB_TYPE: sqlite3
+  actions:
+    ENABLED: true
+  server:
+    DOMAIN: "gitea.hannesalbeiro.com"
+    ROOT_URL: "https://gitea.hannesalbeiro.com/"
+service:
+  http:
+    serviceType: ClusterIP
 
 # Hier deaktivieren wir jetzt explizit alle Standard-Postgres/Redis-Dependencies des Charts
 postgresql:

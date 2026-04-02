@@ -1,9 +1,14 @@
 gitea:
-  config:
-    APP_NAME: "Gitea: Git with a cup of tea"
-    actions:
-      ENABLED: true
-    server:
-      DOMAIN: "gitea.{{ .Values.domain }}"
-      ROOT_URL: "https://gitea.{{ .Values.domain }}/"
-      SSH_DOMAIN: "gitea.{{ .Values.domain }}"
+  gitea:
+    config:
+      APP_NAME: "Gitea: Git with a cup of tea"
+      actions:
+        ENABLED: true
+      server:
+        # DOMAIN: "gitea.{{ .Values.domain }}" # Handled by parameters in toolsetapps.yaml
+        # ROOT_URL: "https://gitea.{{ .Values.domain }}/"
+        SSH_DOMAIN: "gitea.localhost"
+    postgresql:
+      enabled: true
+    postgresql-ha:
+      enabled: false

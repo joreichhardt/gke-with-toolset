@@ -36,6 +36,11 @@ variable "gitea_runner_token" {
   sensitive = true
 }
 
+variable "github_token" {
+  type      = string
+  sensitive = true
+}
+
 variable "domain_name" {
   type    = string
   default = "hannesalbeiro.com"

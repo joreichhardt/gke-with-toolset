@@ -12,6 +12,11 @@ variable "gitea_runner_token" {
   sensitive = true
 }
 
+variable "github_token" {
+  type      = string
+  sensitive = true
+}
+
 variable "eso_gsa_email" {
   type = string
 }

@@ -83,3 +83,22 @@ resource "google_secret_manager_secret_iam_member" "eso_backstage_reader" {
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${var.eso_gsa_email}"
 }
+
+# GitHub Token managed in Secret Manager
+resource "google_secret_manager_secret" "github_token" {
+  secret_id = "github-token"
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret_version" "github_token_v1" {
+  secret      = google_secret_manager_secret.github_token.id
+  secret_data = var.github_token
+}
+
+resource "google_secret_manager_secret_iam_member" "eso_github_reader" {
+  secret_id = google_secret_manager_secret.github_token.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${var.eso_gsa_email}"
+}

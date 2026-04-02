@@ -26,6 +26,7 @@ module "secrets" {
   project_id         = var.project_id
   gemini_api_key     = var.gemini_api_key
   gitea_runner_token = var.gitea_runner_token
+  github_token       = var.github_token
   eso_gsa_email      = module.iam.eso_gsa_email
 }
 

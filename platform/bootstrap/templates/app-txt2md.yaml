@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: txt2md-app
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: txt2md=europe-west3-docker.pkg.dev/{{ .Values.project_id }}/txt2md-repo/txt2md
+    argocd-image-updater.argoproj.io/txt2md.update-strategy: semver
+    argocd-image-updater.argoproj.io/write-back-method: git
+spec:
+  project: default
+  source:
+    repoURL: "https://gitea.{{ .Values.domain }}/joreichhardt/txt2md.git"
+    targetRevision: HEAD
+    path: k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -1,0 +1,73 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitea
+  namespace: argocd
+spec:
+  project: default
+  sources:
+  - chart: gitea
+    repoURL: https://dl.gitea.com/charts/
+    targetRevision: 10.1.3
+    helm:
+      valueFiles:
+      - $values/platform/gitea/values.yaml
+  - repoURL: https://github.com/joreichhardt/gke-with-toolset.git
+    targetRevision: HEAD
+    ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitea-ci
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitea-configs
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/joreichhardt/gke-with-toolset.git
+    targetRevision: HEAD
+    path: platform/gitea
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitea-ci
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitea-act-runner
+  namespace: argocd
+spec:
+  project: default
+  sources:
+  - chart: actions
+    repoURL: https://dl.gitea.com/charts/
+    targetRevision: 0.0.4
+    helm:
+      valueFiles:
+      - $values/platform/gitea/runner-values.yaml
+  - repoURL: https://github.com/joreichhardt/gke-with-toolset.git
+    targetRevision: HEAD
+    ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitea-ci
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

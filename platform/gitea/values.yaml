@@ -21,6 +21,9 @@ postgresql:
     username: gitea
     # password: will be set by secret
 
+postgresql-ha:
+  enabled: false
+
 persistence:
   enabled: true
   size: 10Gi

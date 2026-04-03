@@ -1,8 +1,7 @@
 provider: google
 google:
-  project: {{ .Values.project_id | quote }}
-domainFilters:
-  - {{ .Values.domain | quote }}
+  project: ""  # overridden by ArgoCD helm.parameters (google.project)
+domainFilters: []  # overridden by ArgoCD helm.parameters (domainFilters[0])
 sources:
   - service
   - ingress
@@ -15,4 +14,4 @@ serviceAccount:
   create: true
   name: "external-dns"
   annotations:
-    iam.gke.io/gcp-service-account: "external-dns-gsa@{{ .Values.project_id }}.iam.gserviceaccount.com"
+    iam.gke.io/gcp-service-account: ""  # overridden by ArgoCD helm.parameters

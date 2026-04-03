@@ -2,8 +2,6 @@ installCRDs: true
 serviceAccount:
   create: true
   name: "cert-manager"
-  annotations:
-    iam.gke.io/gcp-service-account: "cert-manager-gsa@project-84ddd43d-e408-4cb9-8cb.iam.gserviceaccount.com"
 prometheus:
   enabled: true
   servicemonitor:

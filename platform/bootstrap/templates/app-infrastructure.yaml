@@ -12,6 +12,9 @@ spec:
     helm:
       valueFiles:
       - $values/platform/cert-manager/values.yaml
+      parameters:
+      - name: serviceAccount.annotations.iam\.gke\.io/gcp-service-account
+        value: "cert-manager-gsa@{{ .Values.project_id }}.iam.gserviceaccount.com"
   - repoURL: https://github.com/joreichhardt/gke-with-toolset.git
     targetRevision: HEAD
     ref: values

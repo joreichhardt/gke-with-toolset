@@ -1,62 +1,75 @@
 variable "project_id" {
-  type = string
+  description = "GCP project ID where all resources are deployed"
+  type        = string
 }
 
 variable "region" {
-  type    = string
-  default = "europe-west3"
+  description = "GCP region for all regional resources"
+  type        = string
+  default     = "europe-west3"
 }
 
 variable "env_name" {
-  type    = string
-  default = "prod"
+  description = "Environment name, used as prefix for VPC and subnet names"
+  type        = string
+  default     = "prod"
 }
 
 variable "cluster_name" {
-  type    = string
-  default = "txt2md-cluster"
+  description = "Name of the GKE cluster"
+  type        = string
+  default     = "txt2md-cluster"
 }
 
 variable "service_account_email" {
-  type = string
+  description = "Email of the pre-existing GCP service account assigned to GKE nodes"
+  type        = string
 }
 
 variable "repo_url" {
-  type    = string
-  default = "https://github.com/joreichhardt/gke-with-toolset.git"
+  description = "GitHub repository URL used as the ArgoCD source for the root app"
+  type        = string
+  default     = "https://github.com/joreichhardt/gke-with-toolset.git"
 }
 
 variable "gemini_api_key" {
-  type      = string
-  sensitive = true
+  description = "Google Gemini API key, stored in GCP Secret Manager"
+  type        = string
+  sensitive   = true
 }
 
 variable "gitea_runner_token" {
-  type      = string
-  sensitive = true
+  description = "Gitea Actions runner registration token, stored in GCP Secret Manager"
+  type        = string
+  sensitive   = true
 }
 
 variable "github_token" {
-  type      = string
-  sensitive = true
+  description = "GitHub personal access token for Gitea repository mirroring"
+  type        = string
+  sensitive   = true
 }
 
 variable "github_client_id" {
-  type      = string
-  sensitive = true
+  description = "GitHub OAuth app client ID for Gitea SSO"
+  type        = string
+  sensitive   = true
 }
 
 variable "github_client_secret" {
-  type      = string
-  sensitive = true
+  description = "GitHub OAuth app client secret for Gitea SSO"
+  type        = string
+  sensitive   = true
 }
 
 variable "domain_name" {
-  type    = string
-  default = "hannesalbeiro.com"
+  description = "Root domain for all platform services (e.g. example.com)"
+  type        = string
+  default     = "hannesalbeiro.com"
 }
 
 variable "acme_email" {
-  type    = string
-  default = "johannes.reichhardt@gmail.com"
+  description = "Email address for Let's Encrypt ACME certificate registration"
+  type        = string
+  default     = "johannes.reichhardt@gmail.com"
 }

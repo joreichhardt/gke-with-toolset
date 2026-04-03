@@ -1,15 +1,19 @@
 variable "repo_url" {
-  type = string
+  description = "GitHub repository URL used as the ArgoCD bootstrap source"
+  type        = string
 }
 
 variable "domain_name" {
-  type = string
+  description = "Root domain for all platform services"
+  type        = string
 }
 
 variable "acme_email" {
-  type = string
+  description = "Email for Let's Encrypt ACME registration"
+  type        = string
 }
 
 variable "project_id" {
-  type = string
+  description = "GCP project ID, passed through to the root ArgoCD Application"
+  type        = string
 }

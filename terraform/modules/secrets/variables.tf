@@ -1,32 +1,39 @@
 variable "project_id" {
-  type = string
+  description = "GCP project ID where secrets are stored"
+  type        = string
 }
 
 variable "gemini_api_key" {
-  type      = string
-  sensitive = true
+  description = "Google Gemini API key"
+  type        = string
+  sensitive   = true
 }
 
 variable "gitea_runner_token" {
-  type      = string
-  sensitive = true
+  description = "Gitea Actions runner registration token"
+  type        = string
+  sensitive   = true
 }
 
 variable "github_token" {
-  type      = string
-  sensitive = true
+  description = "GitHub personal access token"
+  type        = string
+  sensitive   = true
 }
 
 variable "github_client_id" {
-  type      = string
-  sensitive = true
+  description = "GitHub OAuth app client ID"
+  type        = string
+  sensitive   = true
 }
 
 variable "github_client_secret" {
-  type      = string
-  sensitive = true
+  description = "GitHub OAuth app client secret"
+  type        = string
+  sensitive   = true
 }
 
 variable "eso_gsa_email" {
-  type = string
+  description = "Email of the External Secrets Operator GSA, granted secretAccessor on all secrets"
+  type        = string
 }

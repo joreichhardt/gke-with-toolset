@@ -116,3 +116,27 @@ resource "google_secret_manager_secret_iam_member" "eso_github_client_secret_rea
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${var.eso_gsa_email}"
 }
+
+# Grafana Admin Password managed in Secret Manager
+resource "random_password" "grafana_admin_password" {
+  length  = 24
+  special = false
+}
+
+resource "google_secret_manager_secret" "grafana_admin_password" {
+  secret_id = "grafana-admin-password"
+  replication {
+    auto {}
+  }
+}
+
+resource "google_secret_manager_secret_version" "grafana_admin_password_v1" {
+  secret      = google_secret_manager_secret.grafana_admin_password.id
+  secret_data = random_password.grafana_admin_password.result
+}
+
+resource "google_secret_manager_secret_iam_member" "eso_grafana_reader" {
+  secret_id = google_secret_manager_secret.grafana_admin_password.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${var.eso_gsa_email}"
+}

@@ -10,8 +10,8 @@ config:
   actions:
     ENABLED: true
   server:
-    DOMAIN: "gitea.hannesalbeiro.com"
-    ROOT_URL: "https://gitea.hannesalbeiro.com/"
+    DOMAIN: ""  # overridden by ArgoCD helm.parameters
+    ROOT_URL: ""  # overridden by ArgoCD helm.parameters
 service:
   http:
     type: ClusterIP

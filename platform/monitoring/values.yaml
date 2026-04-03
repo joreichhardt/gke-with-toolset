@@ -18,7 +18,9 @@ prometheus:
         memory: 2048Mi
 
 grafana:
-  adminPassword: "prom-operator" # Change this!
+  admin:
+    existingSecret: "grafana-admin-secret"
+    passwordKey: "admin-password"
   persistence:
     enabled: true
     storageClassName: standard-rwo

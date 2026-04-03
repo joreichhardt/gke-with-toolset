@@ -9,7 +9,7 @@ spec:
     namespace: kube-system
     sectionName: https
   hostnames:
-  - "gitea.hannesalbeiro.com"
+  - "gitea.{{ .Values.domain }}"
   rules:
   - backendRefs:
     - name: gitea-http

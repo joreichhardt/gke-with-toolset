@@ -1,4 +1,8 @@
-# Dies sind die offiziellen Values für das Gitea-Chart (https://dl.gitea.com/charts/)
+# gitea-configs chart defaults — overridden by ArgoCD parameters
+domain: ""
+project_id: ""
+
+# Gitea application chart values (used via $values reference in gitea ArgoCD app)
 config:
   APP_NAME: "Gitea: Git with a cup of tea"
   database:
@@ -13,7 +17,6 @@ service:
     type: ClusterIP
     port: 3000
 
-# Hier deaktivieren wir jetzt explizit alle Standard-Postgres/Redis-Dependencies des Charts
 postgresql:
   enabled: false
 redis-cluster:

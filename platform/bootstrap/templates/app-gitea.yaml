@@ -37,8 +37,12 @@ spec:
     repoURL: https://github.com/joreichhardt/gke-with-toolset.git
     targetRevision: HEAD
     path: platform/gitea
-    directory:
-      recurse: true
+    helm:
+      parameters:
+      - name: domain
+        value: {{ .Values.domain | quote }}
+      - name: project_id
+        value: {{ .Values.project_id | quote }}
   destination:
     server: https://kubernetes.default.svc
     namespace: gitea-ci
@@ -61,6 +65,9 @@ spec:
     helm:
       valueFiles:
       - $values/platform/gitea/runner-values.yaml
+      parameters:
+      - name: giteaRootURL
+        value: "https://gitea.{{ .Values.domain }}/"
   - repoURL: https://github.com/joreichhardt/gke-with-toolset.git
     targetRevision: HEAD
     ref: values

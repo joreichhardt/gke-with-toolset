@@ -8,6 +8,6 @@ spec:
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
-  commonName: "gitea.hannesalbeiro.com"
+  commonName: "gitea.{{ .Values.domain }}"
   dnsNames:
-  - "gitea.hannesalbeiro.com"
+  - "gitea.{{ .Values.domain }}"

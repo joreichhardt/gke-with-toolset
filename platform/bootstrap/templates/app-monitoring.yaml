@@ -12,6 +12,13 @@ spec:
     helm:
       valueFiles:
       - $values/platform/monitoring/values.yaml
+      parameters:
+      - name: prometheusOperator.admissionWebhooks.enabled
+        value: "false"
+      - name: prometheusOperator.admissionWebhooks.patch.enabled
+        value: "false"
+      - name: prometheusOperator.tls.enabled
+        value: "false"
   - repoURL: https://github.com/joreichhardt/gke-with-toolset.git
     targetRevision: HEAD
     ref: values

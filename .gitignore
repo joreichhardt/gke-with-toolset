@@ -5,6 +5,7 @@
 .terraform.lock.hcl
 *.tfvars
 *.tfvars.json
+.docs/superpowers/reports/*
 
 # Credentials
 *.json

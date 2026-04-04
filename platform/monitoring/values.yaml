@@ -55,3 +55,8 @@ alertmanager:
       receiver: 'null'
     receivers:
     - name: 'null'
+
+# Fix: Disable admission webhooks to prevent "ClusterRole already exists" during initial sync
+prometheusOperator:
+  admissionWebhooks:
+    enabled: false

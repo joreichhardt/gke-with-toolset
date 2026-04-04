@@ -1,6 +1,8 @@
 # Cloud-Native GKE Platform
 
-A fully autonomous Kubernetes infrastructure on GCP featuring automated DNS, SSL, GitOps, and a complete CI/CD pipeline. This setup is designed for persistence and ease of redeployment.
+A fully autonomous Kubernetes infrastructure on GCP featuring automated DNS, SSL, GitOps, and a complete CI/CD pipeline. This setup is designed for persistence and ease of redeployment.  
+
+terraform apply takes about 20 Minutes. Till the Gateway gets an IP another 10 to 15
 
 ## 🏗️ Architecture & Features
 

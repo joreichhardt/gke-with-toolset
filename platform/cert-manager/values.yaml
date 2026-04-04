@@ -3,6 +3,6 @@ serviceAccount:
   create: true
   name: "cert-manager"
 prometheus:
-  enabled: true
+  enabled: false
   servicemonitor:
-    enabled: true
+    enabled: false

@@ -56,7 +56,11 @@ alertmanager:
     receivers:
     - name: 'null'
 
-# Fix: Disable admission webhooks to prevent "ClusterRole already exists" during initial sync
+# Fix: Disable admission webhooks and its TLS to prevent sync conflicts and mount errors
 prometheusOperator:
   admissionWebhooks:
+    enabled: false
+    patch:
+      enabled: false
+  tls:
     enabled: false

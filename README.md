@@ -30,14 +30,22 @@ Once deployed, all services are automatically reachable via HTTPS:
 4. **Push:** The runner builds the Docker image and pushes it to Google Artifact Registry using Workload Identity.
 5. **Deploy:** **Argo CD Image Updater** detects the new image version, updates the manifest in Gitea, and triggers a rolling update in the GKE cluster.
 
-## 🔐 Initial Access & Credentials
+## 🔐 Access & Credentials
 
-- **Argo CD (admin):**
-  `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
-- **Gitea:**
-  Create your first admin account via the web UI upon first access.
-- **Grafana (admin):**
-  `prom-operator` (initial password, change upon first login)
+### Argo CD
+- **URL:** `https://argocd.${DOMAIN_NAME}`
+- **Username:** `admin`
+- **Password:** `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo`
+
+### Gitea
+- **URL:** `https://gitea.${DOMAIN_NAME}`
+- **Username:** `gitea_admin`
+- **Password:** `kubectl -n gitea-ci get secret gitea-inline-config -o jsonpath="{.data.password}" | base64 -d; echo`
+
+### Grafana (Monitoring)
+- **URL:** `https://grafana.${DOMAIN_NAME}`
+- **Username:** `admin`
+- **Password:** `kubectl -n monitoring get secret grafana-admin-secret -o jsonpath="{.data.admin-password}" | base64 -d; echo`
 
 ## 🛠️ Deployment
 

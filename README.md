@@ -58,6 +58,15 @@ terraform init
 terraform apply
 ```
 
+#### Node Scaling Configuration
+You can control the cluster size and automatic scaling via `terraform.tfvars`:
+```hcl
+node_count     = 1  # Initial nodes per zone
+min_node_count = 1  # Minimum nodes per zone (autoscaling)
+max_node_count = 5  # Maximum nodes per zone (autoscaling)
+```
+The cluster will automatically add nodes if the workload (e.g. Monitoring or CI/CD jobs) exceeds the current capacity.
+
 ### 2. Gitea Runner Registration
 After Gitea is up, retrieve the registration token from **Site Admin -> Actions -> Runners**, update your `terraform.tfvars` with `gitea_runner_token = "YOUR_TOKEN"`, and run `terraform apply` again. The External Secrets Operator will then automatically sync it to the runner.
 

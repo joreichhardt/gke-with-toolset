@@ -26,7 +26,15 @@ resource "google_container_node_pool" "nodes" {
   name       = "${var.cluster_name}-node-pool"
   cluster    = google_container_cluster.primary.name
   location   = var.region
-  node_count = var.node_count
+  
+  # Initialer Node Count
+  initial_node_count = var.node_count
+
+  # Dynamische Skalierung
+  autoscaling {
+    min_node_count = var.min_node_count
+    max_node_count = var.max_node_count
+  }
 
   node_config {
     preemptible  = true

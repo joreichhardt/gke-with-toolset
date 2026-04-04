@@ -21,6 +21,24 @@ variable "cluster_name" {
   default     = "txt2md-cluster"
 }
 
+variable "node_count" {
+  description = "Initial number of nodes per zone"
+  type        = number
+  default     = 1
+}
+
+variable "min_node_count" {
+  description = "Minimum number of nodes per zone"
+  type        = number
+  default     = 1
+}
+
+variable "max_node_count" {
+  description = "Maximum number of nodes per zone"
+  type        = number
+  default     = 5
+}
+
 variable "service_account_email" {
   description = "Email of the pre-existing GCP service account assigned to GKE nodes"
   type        = string

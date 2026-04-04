@@ -24,9 +24,21 @@ variable "subnet_id" {
 }
 
 variable "node_count" {
-  description = "Number of nodes per zone in the node pool"
+  description = "Initial number of nodes per zone in the node pool"
   type        = number
   default     = 1
+}
+
+variable "min_node_count" {
+  description = "Minimum number of nodes per zone in the node pool"
+  type        = number
+  default     = 1
+}
+
+variable "max_node_count" {
+  description = "Maximum number of nodes per zone in the node pool"
+  type        = number
+  default     = 5
 }
 
 variable "machine_type" {

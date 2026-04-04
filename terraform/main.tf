@@ -19,6 +19,9 @@ module "gke" {
   network_id            = module.network.network_id
   subnet_id             = module.network.subnet_id
   service_account_email = var.service_account_email
+  node_count            = var.node_count
+  min_node_count        = var.min_node_count
+  max_node_count        = var.max_node_count
 }
 
 module "secrets" {

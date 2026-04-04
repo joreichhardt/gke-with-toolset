@@ -62,10 +62,10 @@ resource "null_resource" "cleanup_pvc_disks" {
       DISKS=$(gcloud compute disks list --project=${self.triggers.project_id} --filter="name:pvc-*" --format="value(name,zone)")
       if [ ! -z "$DISKS" ]; then
         echo "Lösche folgende Disks: $DISKS"
-        while read -r name zone; do
+        echo "$DISKS" | while read -r name zone; do
           echo "Lösche verwaiste Disk $name in $zone..."
           gcloud compute disks delete "$name" --zone="$zone" --project=${self.triggers.project_id} --quiet || true
-        done <<< "$DISKS"
+        done
       else
         echo "✅ Keine verwaisten Disks gefunden."
       fi

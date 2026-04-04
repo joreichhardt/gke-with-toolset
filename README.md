@@ -58,12 +58,13 @@ terraform init
 terraform apply
 ```
 
-#### Node Scaling Configuration
-You can control the cluster size and automatic scaling via `terraform.tfvars`:
+#### Node Scaling & Cluster Configuration
+You can control the cluster name, size and automatic scaling via `terraform.tfvars`:
 ```hcl
-node_count     = 1  # Initial nodes per zone
-min_node_count = 1  # Minimum nodes per zone (autoscaling)
-max_node_count = 5  # Maximum nodes per zone (autoscaling)
+cluster_name   = "txt2md-cluster" # Custom name for your GKE cluster
+node_count     = 1               # Initial nodes per zone
+min_node_count = 1               # Minimum nodes per zone (autoscaling)
+max_node_count = 5               # Maximum nodes per zone (autoscaling)
 ```
 The cluster will automatically add nodes if the workload (e.g. Monitoring or CI/CD jobs) exceeds the current capacity.
 

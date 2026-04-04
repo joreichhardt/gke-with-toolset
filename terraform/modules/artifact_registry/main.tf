@@ -4,6 +4,6 @@ resource "google_artifact_registry_repository" "docker_repo" {
   format        = "DOCKER"
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }

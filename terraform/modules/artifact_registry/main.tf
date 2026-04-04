@@ -15,7 +15,7 @@ resource "null_resource" "bootstrap_image" {
   }
 
   provisioner "local-exec" {
-    command = "gcloud builds submit https://github.com/joreichhardt/txt2md.git#master --tag ${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.docker_repo.repository_id}/txt2md:latest --project=${var.project_id}"
+    command = "git clone https://github.com/joreichhardt/txt2md.git#master bootstrap_repo && gcloud builds submit bootstrap_repo --tag ${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.docker_repo.repository_id}/txt2md:latest --project=${var.project_id} && rm -rf bootstrap_repo"
   }
 
   depends_on = [google_artifact_registry_repository.docker_repo]

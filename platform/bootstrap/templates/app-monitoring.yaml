@@ -19,6 +19,8 @@ spec:
         value: "false"
       - name: prometheusOperator.tls.enabled
         value: "false"
+      - name: grafana.adminUser
+        value: "admin"
   - repoURL: https://github.com/joreichhardt/gke-with-toolset.git
     targetRevision: HEAD
     ref: values

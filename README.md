@@ -42,7 +42,7 @@ Once deployed, all services are automatically reachable via HTTPS:
 ### Gitea
 - **URL:** `https://gitea.${DOMAIN_NAME}`
 - **Username:** `gitea_admin`
-- **Password:** `kubectl -n gitea-ci get secret gitea-inline-config -o jsonpath="{.data.password}" | base64 -d; echo`
+- **Password:** `kubectl -n gitea-ci get secret gitea-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo`
 
 ### Grafana (Monitoring)
 - **URL:** `https://grafana.${DOMAIN_NAME}`

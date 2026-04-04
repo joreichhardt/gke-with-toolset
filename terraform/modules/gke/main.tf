@@ -40,3 +40,27 @@ resource "google_container_node_pool" "nodes" {
     }
   }
 }
+
+# Bereinigung verwaister PVC-Disks beim Destroy
+resource "null_resource" "cleanup_pvc_disks" {
+  triggers = {
+    project_id = var.project_id
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOF
+      echo "🧹 Suche nach verwaisten GKE-Disks zum Löschen..."
+      DISKS=$(gcloud compute disks list --project=${self.triggers.project_id} --filter="name:pvc-*" --format="value(name,zone)")
+      if [ ! -z "$DISKS" ]; then
+        echo "Lösche folgende Disks: $DISKS"
+        while read -r name zone; do
+          echo "Lösche verwaiste Disk $name in $zone..."
+          gcloud compute disks delete "$name" --zone="$zone" --project=${self.triggers.project_id} --quiet || true
+        done <<< "$DISKS"
+      else
+        echo "✅ Keine verwaisten Disks gefunden."
+      fi
+EOF
+  }
+}

@@ -8,7 +8,10 @@ gitea:
     APP_NAME: "Gitea: Git with a cup of tea"
     database:
       DB_TYPE: sqlite3
-    actions:
+  admin:
+    existingSecret: "gitea-admin-secret"
+  actions:
+
       ENABLED: true
     server:
       DOMAIN: ""  # overridden by ArgoCD helm.parameters

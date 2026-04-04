@@ -3,19 +3,20 @@ domain: ""
 project_id: ""
 
 # Gitea application chart values (used via $values reference in gitea ArgoCD app)
-config:
-  APP_NAME: "Gitea: Git with a cup of tea"
-  database:
-    DB_TYPE: sqlite3
-  actions:
-    ENABLED: true
-  server:
-    DOMAIN: ""  # overridden by ArgoCD helm.parameters
-    ROOT_URL: ""  # overridden by ArgoCD helm.parameters
-service:
-  http:
-    type: ClusterIP
-    port: 3000
+gitea:
+  config:
+    APP_NAME: "Gitea: Git with a cup of tea"
+    database:
+      DB_TYPE: sqlite3
+    actions:
+      ENABLED: true
+    server:
+      DOMAIN: ""  # overridden by ArgoCD helm.parameters
+      ROOT_URL: ""  # overridden by ArgoCD helm.parameters
+  service:
+    http:
+      type: ClusterIP
+      port: 3000
 
 postgresql:
   enabled: false

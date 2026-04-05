@@ -42,11 +42,14 @@ module "registry" {
 }
 
 module "argocd" {
-  source      = "./modules/argocd"
-  repo_url    = var.repo_url
-  domain_name = var.domain_name
-  acme_email  = var.acme_email
-  project_id  = var.project_id
-  
+  source       = "./modules/argocd"
+  repo_url     = var.repo_url
+  domain_name  = var.domain_name
+  acme_email   = var.acme_email
+  project_id   = var.project_id
+  cluster_name = var.cluster_name
+  region       = var.region
+  cert_bucket  = "${var.project_id}-k3s-tf-state"
+
   depends_on = [module.gke]
 }

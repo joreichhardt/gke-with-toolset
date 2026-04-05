@@ -9,6 +9,7 @@ gitea:
     database:
       DB_TYPE: sqlite3
   admin:
+    username: "gitea_admin"
     existingSecret: "gitea-admin-secret"
   actions:
 

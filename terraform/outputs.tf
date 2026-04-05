@@ -33,3 +33,8 @@ output "grafana_password_command" {
   value       = "gcloud secrets versions access latest --secret='grafana-admin-password' --project=${var.project_id}"
   description = "Run this command to get the Grafana admin password from Secret Manager"
 }
+
+output "apply_finish_time" {
+  value       = formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())
+  description = "Timestamp when the Terraform apply completed"
+}

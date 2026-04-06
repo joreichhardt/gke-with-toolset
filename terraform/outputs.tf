@@ -34,6 +34,15 @@ output "grafana_password_command" {
   description = "Run this command to get the Grafana admin password from Secret Manager"
 }
 
+output "kibana_url" {
+  value = "https://kibana.${var.domain_name}"
+}
+
+output "elk_password_command" {
+  value       = "kubectl -n logging get secret elasticsearch-es-elastic-user -o jsonpath='{.data.elastic}' | base64 -d; echo"
+  description = "Run this command to get the ELK elastic user password"
+}
+
 output "apply_finish_time" {
   value       = formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())
   description = "Timestamp when the Terraform apply completed"

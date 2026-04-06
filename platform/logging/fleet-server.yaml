@@ -12,9 +12,6 @@ rules:
 - apiGroups: [""]
   resources: ["pods", "namespaces", "nodes"]
   verbs: ["get", "watch", "list"]
-- apiGroups: ["apps"]
-  resources: ["replicasets"]
-  verbs: ["get", "watch", "list"]
 - apiGroups: ["coordination.k8s.io"]
   resources: ["leases"]
   verbs: ["get", "create", "update"]
@@ -52,9 +49,15 @@ spec:
     podTemplate:
       spec:
         serviceAccountName: fleet-server
-        automountServiceAccountToken: true
+        # ECK Fleet Server requires root to write agent state and bind to port 8220
         securityContext:
           runAsUser: 0
-        volumes:
-        - name: agent-data
-          emptyDir: {}
+        containers:
+        - name: agent
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 200m
+            limits:
+              memory: 1Gi
+              cpu: 500m

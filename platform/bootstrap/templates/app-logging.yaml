@@ -21,3 +21,35 @@ spec:
     syncOptions:
     - CreateNamespace=true
     - ServerSideApply=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: logging-configs
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/joreichhardt/gke-with-toolset.git
+    targetRevision: HEAD
+    path: platform/logging
+    directory:
+      include: "*.yaml"
+      exclude: "fluent-bit-values.yaml"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: logging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 30s
+        factor: 2
+        maxDuration: 5m

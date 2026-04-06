@@ -15,6 +15,7 @@ This platform is managed as a single unit via Terraform and Argo CD:
 - **Network:** Global L7 Load Balancer with **automatic HTTP-to-HTTPS redirection**.
 - **Persistence:** Artifact Registry is protected from accidental deletion (`prevent_destroy`).
 - **Secret Management:** Google Secret Manager integrated with External Secrets Operator (ESO).
+- **Log Aggregation:** ECK-managed Elasticsearch + Kibana with Fluent Bit for cluster-wide log collection.
 
 ## 🌐 Automated Subdomains
 
@@ -23,6 +24,7 @@ Once deployed, all services are automatically reachable via HTTPS:
 - **Argo CD (GitOps):** `https://argocd.${DOMAIN_NAME}`
 - **Grafana (Monitoring):** `https://grafana.${DOMAIN_NAME}`
 - **txt2md App:** `https://txt2md.${DOMAIN_NAME}`
+- **Kibana (Logs):** `https://kibana.${DOMAIN_NAME}`
 
 ## 🚀 CI/CD Pipeline Flow
 
@@ -48,6 +50,11 @@ Once deployed, all services are automatically reachable via HTTPS:
 - **URL:** `https://grafana.${DOMAIN_NAME}`
 - **Username:** `admin`
 - **Password:** `kubectl -n monitoring get secret grafana-admin-secret -o jsonpath="{.data.admin-password}" | base64 -d; echo`
+
+### Kibana (Log Aggregation)
+- **URL:** `https://kibana.${DOMAIN_NAME}`
+- **Username:** `elastic`
+- **Password:** `kubectl -n logging get secret elasticsearch-es-elastic-user -o jsonpath="{.data.elastic}" | base64 -d; echo`
 
 ## 🛠️ Deployment
 

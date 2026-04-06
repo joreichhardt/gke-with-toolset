@@ -29,3 +29,19 @@ spec:
     group: ""
     kind: Service
     name: monitoring-kube-prometheus-prometheus
+---
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: kibana-hc
+  namespace: logging
+spec:
+  default:
+    config:
+      type: HTTP
+      httpHealthCheck:
+        requestPath: /api/status
+  targetRef:
+    group: ""
+    kind: Service
+    name: kibana-kb-http

@@ -12,8 +12,7 @@ gitea:
     username: "gitea_admin"
     existingSecret: "gitea-admin-secret"
   actions:
-
-      ENABLED: true
+    ENABLED: true
     server:
       DOMAIN: ""  # overridden by ArgoCD helm.parameters
       ROOT_URL: ""  # overridden by ArgoCD helm.parameters

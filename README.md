@@ -78,6 +78,28 @@ The cluster will automatically add nodes if the workload (e.g. Monitoring or CI/
 ### 2. Gitea Runner Registration
 After Gitea is up, retrieve the registration token from **Site Admin -> Actions -> Runners**, update your `terraform.tfvars` with `gitea_runner_token = "YOUR_TOKEN"`, and run `terraform apply` again. The External Secrets Operator will then automatically sync it to the runner.
 
+## 📋 Log Aggregation (ELK Stack)
+
+Cluster-wide log aggregation is managed by the **Elastic Cloud on Kubernetes (ECK)** operator:
+
+- **Elasticsearch:** Stores and indexes all log data, deployed and managed by the ECK operator.
+- **Kibana:** Web UI for searching, visualizing, and exploring logs at `https://kibana.${DOMAIN_NAME}`.
+- **Fluent Bit:** Lightweight log forwarder running as a DaemonSet on every node, shipping container logs to Elasticsearch.
+
+### Log Flow
+
+```
+Container Logs → Fluent Bit (DaemonSet) → Elasticsearch (ECK) → Kibana (UI)
+```
+
+### Access
+
+- **URL:** `https://kibana.${DOMAIN_NAME}`
+- **Username:** `elastic`
+- **Password:** `kubectl -n logging get secret elasticsearch-es-elastic-user -o jsonpath="{.data.elastic}" | base64 -d; echo`
+
+---
+
 ## 🛡️ Disaster Recovery & Destroy
 - Running `terraform destroy` will delete the cluster and toolset but **keep the Artifact Registry** intact.
 - Upon the next `terraform apply`, the cluster will be rebuilt, and Argo CD will automatically restore the entire platform state from the Git manifests.
